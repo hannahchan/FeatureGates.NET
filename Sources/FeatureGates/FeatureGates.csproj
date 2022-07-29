@@ -11,7 +11,7 @@
     <Authors>Hannah Chan</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hannahchan/FeatureGates.NET</PackageProjectUrl>
-    <Description></Description>
+    <Description>Build consistent and observable features.</Description>
     <PackageTags></PackageTags>
   </PropertyGroup>
 
