@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{EB4443AC-0417-4BC7-8E3F-F78CEC68C9FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatureGates", "Sources\FeatureGates\FeatureGates.csproj", "{F01A6F4E-7773-4476-BE9B-8C3E2011C9E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A91F932B-52C3-4646-90CE-C70F2499213E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatureGates.UnitTests", "Tests\FeatureGates.UnitTests\FeatureGates.UnitTests.csproj", "{658C6293-0441-4B5C-B74A-0B6DB6D1EC6F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F01A6F4E-7773-4476-BE9B-8C3E2011C9E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F01A6F4E-7773-4476-BE9B-8C3E2011C9E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F01A6F4E-7773-4476-BE9B-8C3E2011C9E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F01A6F4E-7773-4476-BE9B-8C3E2011C9E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{658C6293-0441-4B5C-B74A-0B6DB6D1EC6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{658C6293-0441-4B5C-B74A-0B6DB6D1EC6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{658C6293-0441-4B5C-B74A-0B6DB6D1EC6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{658C6293-0441-4B5C-B74A-0B6DB6D1EC6F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F01A6F4E-7773-4476-BE9B-8C3E2011C9E6} = {EB4443AC-0417-4BC7-8E3F-F78CEC68C9FA}
+		{658C6293-0441-4B5C-B74A-0B6DB6D1EC6F} = {A91F932B-52C3-4646-90CE-C70F2499213E}
+	EndGlobalSection
+EndGlobal

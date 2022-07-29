@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Code Analysis Rule Set" Description="Code Analysis Rules for Scaffold" ToolsVersion="15.0">
+
+  <!-- https://github.com/DotNetAnalyzers/IDisposableAnalyzers -->
+  <Rules AnalyzerId="IDisposableAnalyzers" RuleNamespace="IDisposableAnalyzers">
+  </Rules>
+
+  <!-- https://rules.sonarsource.com/csharp -->
+  <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
+  </Rules>
+
+  <!-- https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/DOCUMENTATION.md -->
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA0001" Action="None" />
+    <Rule Id="SA1600" Action="None" />
+    <Rule Id="SA1601" Action="None" />
+    <Rule Id="SA1623" Action="None" />
+    <Rule Id="SA1633" Action="None" />
+    <Rule Id="SA1652" Action="None" />
+  </Rules>
+
+  <!-- https://xunit.net/xunit.analyzers/rules -->
+  <Rules AnalyzerId="xunit.analyzers" RuleNamespace="xunit.analyzers">
+  </Rules>
+
+</RuleSet>

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>FeatureGates</PackageId>
+    <PackageVersion>1.0.0-preview.1</PackageVersion>
+    <Title>FeatureGates</Title>
+    <Authors>Hannah Chan</Authors>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/hannahchan/FeatureGates.NET</PackageProjectUrl>
+    <Description></Description>
+    <PackageTags></PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(CAKE_BUILD)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+</Project>

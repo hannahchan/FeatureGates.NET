@@ -1,0 +1,16 @@
+<Project>
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <!-- Disable until xUnit supports Nullable Reference Types. This feature is expected in xUnit 3. -->
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Copies xUnit configuration file to all test projects. -->
+    <!-- https://xunit.net/docs/configuration-files -->
+    <Content Include="$(MSBuildThisFileDirectory)/xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
