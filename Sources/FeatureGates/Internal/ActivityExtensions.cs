@@ -1,4 +1,4 @@
-namespace FeatureGates.Instrumentation;
+namespace FeatureGates.Internal;
 
 using System;
 using System.Diagnostics;
@@ -37,15 +37,13 @@ internal static class ActivityExtensions
 
     public static Activity RecordException(this Activity activity, Exception exception)
     {
-        // Trace Semantic Conventions
-        // https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/README.md
         ActivityTagsCollection tagsCollection = new ActivityTagsCollection
         {
-            { "exception.type", exception.GetType().FullName },
-            { "exception.message", exception.Message },
-            { "exception.stacktrace", exception.ToString() },
+            { TraceConventions.AttributeExceptionType, exception.GetType().FullName },
+            { TraceConventions.AttributeExceptionMessage, exception.Message },
+            { TraceConventions.AttributeExceptionStacktrace, exception.ToString() },
         };
 
-        return activity.AddEvent(new ActivityEvent("exception", default, tagsCollection));
+        return activity.AddEvent(new ActivityEvent(TraceConventions.AttributeExceptionEventName, default, tagsCollection));
     }
 }

@@ -1,7 +1,7 @@
-namespace FeatureGates.UnitTests.Instrumentation;
+namespace FeatureGates.UnitTests.Internal;
 
 using System.Diagnostics;
-using FeatureGates.Instrumentation;
+using FeatureGates.Internal;
 using Xunit;
 
 [Collection(TestCollection.Activity)]

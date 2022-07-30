@@ -3,7 +3,7 @@ namespace FeatureGates.UnitTests;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using FeatureGates.Instrumentation;
+using FeatureGates.Internal;
 using Xunit;
 
 public class FeatureGateAsyncTResultUnitTests
@@ -90,7 +90,7 @@ public class FeatureGateAsyncTResultUnitTests
             // Act
             Exception gateOpenedResult = await Record.ExceptionAsync(() => new FeatureGateAsync<string>(
                 featureGateKey: "myFeatureGateKey",
-                metricType: MetricType.Histogram,
+                instrumentType: InstrumentType.Histogram,
                 controlledBy: async () => await Task.FromResult(true),
                 whenOpened: null,
                 whenClosed: null)
@@ -98,7 +98,7 @@ public class FeatureGateAsyncTResultUnitTests
 
             Exception gateClosedResult = await Record.ExceptionAsync(() => new FeatureGateAsync<string>(
                 featureGateKey: "myFeatureGateKey",
-                metricType: MetricType.Histogram,
+                instrumentType: InstrumentType.Histogram,
                 controlledBy: async () => await Task.FromResult(false),
                 whenOpened: null,
                 whenClosed: null)
@@ -125,7 +125,7 @@ public class FeatureGateAsyncTResultUnitTests
             // Act
             Exception gateOpenedResult = await Record.ExceptionAsync(() => new FeatureGateAsync<string>(
                 featureGateKey: "myFeatureGateKey",
-                metricType: MetricType.Histogram,
+                instrumentType: InstrumentType.Histogram,
                 controlledBy: async () => await Task.FromResult(true),
                 whenOpened: () => throw new Exception("Opened gate threw an exception."),
                 whenClosed: () => throw new Exception("Closed gate threw an exception."))
@@ -133,7 +133,7 @@ public class FeatureGateAsyncTResultUnitTests
 
             Exception gateClosedResult = await Record.ExceptionAsync(() => new FeatureGateAsync<string>(
                 featureGateKey: "myFeatureGateKey",
-                metricType: MetricType.Histogram,
+                instrumentType: InstrumentType.Histogram,
                 controlledBy: async () => await Task.FromResult(false),
                 whenOpened: () => throw new Exception("Opened gate threw an exception."),
                 whenClosed: () => throw new Exception("Closed gate threw an exception."))
@@ -148,9 +148,9 @@ public class FeatureGateAsyncTResultUnitTests
         }
 
         [Theory]
-        [InlineData(MetricType.Counter)]
-        [InlineData(MetricType.Histogram)]
-        internal async Task When_FeatureGateInvokedWithMetricType_Expect_NoException(MetricType metricType)
+        [InlineData(InstrumentType.Counter)]
+        [InlineData(InstrumentType.Histogram)]
+        internal async Task When_FeatureGateInvokedWithInstrumentType_Expect_NoException(InstrumentType instrumentType)
         {
             // Arrange
             Exception gateOpenedResult;
@@ -159,7 +159,7 @@ public class FeatureGateAsyncTResultUnitTests
             // Act
             gateOpenedResult = await Record.ExceptionAsync(() => new FeatureGateAsync<string>(
                 featureGateKey: "myFeatureGateKey",
-                metricType: metricType,
+                instrumentType: instrumentType,
                 controlledBy: async () => await Task.FromResult(true),
                 whenOpened: null,
                 whenClosed: null)
@@ -167,7 +167,7 @@ public class FeatureGateAsyncTResultUnitTests
 
             gateClosedResult = await Record.ExceptionAsync(() => new FeatureGateAsync<string>(
                 featureGateKey: "myFeatureGateKey",
-                metricType: metricType,
+                instrumentType: instrumentType,
                 controlledBy: async () => await Task.FromResult(false),
                 whenOpened: null,
                 whenClosed: null)
@@ -179,9 +179,9 @@ public class FeatureGateAsyncTResultUnitTests
         }
 
         [Theory]
-        [InlineData(MetricType.Counter)]
-        [InlineData(MetricType.Histogram)]
-        internal async Task When_FeatureGateInvokedWithMetricType_Expect_Exception(MetricType metricType)
+        [InlineData(InstrumentType.Counter)]
+        [InlineData(InstrumentType.Histogram)]
+        internal async Task When_FeatureGateInvokedWithInstrumentType_Expect_Exception(InstrumentType instrumentType)
         {
             // Arrange
             Exception gateOpenedResult;
@@ -190,7 +190,7 @@ public class FeatureGateAsyncTResultUnitTests
             // and Act
             gateOpenedResult = await Record.ExceptionAsync(() => new FeatureGateAsync<string>(
                 featureGateKey: "myFeatureGateKey",
-                metricType: metricType,
+                instrumentType: instrumentType,
                 controlledBy: async () => await Task.FromResult(true),
                 whenOpened: () => throw new Exception("Opened gate threw an exception."),
                 whenClosed: () => throw new Exception("Closed gate threw an exception."))
@@ -198,7 +198,7 @@ public class FeatureGateAsyncTResultUnitTests
 
             gateClosedResult = await Record.ExceptionAsync(() => new FeatureGateAsync<string>(
                 featureGateKey: "myFeatureGateKey",
-                metricType: metricType,
+                instrumentType: instrumentType,
                 controlledBy: async () => await Task.FromResult(false),
                 whenOpened: () => throw new Exception("Opened gate threw an exception."),
                 whenClosed: () => throw new Exception("Closed gate threw an exception."))

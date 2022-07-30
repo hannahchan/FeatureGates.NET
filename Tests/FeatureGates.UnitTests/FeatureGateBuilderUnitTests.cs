@@ -23,7 +23,7 @@ public class FeatureGateBuilderUnitTests
 
             // Assert
             Assert.Equal(featureGateKey, featureGate.Key);
-            Assert.Equal(MetricType.Histogram, featureGate.MetricType);
+            Assert.Equal(InstrumentType.Histogram, featureGate.InstrumentType);
         }
 
         [Fact]
@@ -40,7 +40,7 @@ public class FeatureGateBuilderUnitTests
 
             // Assert
             Assert.Equal(featureGateKey, featureGate.Key);
-            Assert.Equal(MetricType.Counter, featureGate.MetricType);
+            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
         }
 
         [Fact]
@@ -57,7 +57,7 @@ public class FeatureGateBuilderUnitTests
 
             // Assert
             Assert.Equal(featureGateKey, featureGate.Key);
-            Assert.Equal(MetricType.Counter, featureGate.MetricType);
+            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ public class FeatureGateBuilderUnitTests
 
             // Assert
             Assert.Equal(featureGateKey, featureGate.Key);
-            Assert.Equal(MetricType.Counter, featureGate.MetricType);
+            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
         }
     }
 
@@ -95,7 +95,7 @@ public class FeatureGateBuilderUnitTests
 
             // Assert
             Assert.Equal(featureGateKey, featureGate.Key);
-            Assert.Equal(MetricType.Histogram, featureGate.MetricType);
+            Assert.Equal(InstrumentType.Histogram, featureGate.InstrumentType);
         }
 
         [Fact]
@@ -112,7 +112,7 @@ public class FeatureGateBuilderUnitTests
 
             // Assert
             Assert.Equal(featureGateKey, featureGate.Key);
-            Assert.Equal(MetricType.Counter, featureGate.MetricType);
+            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
         }
 
         [Fact]
@@ -129,7 +129,7 @@ public class FeatureGateBuilderUnitTests
 
             // Assert
             Assert.Equal(featureGateKey, featureGate.Key);
-            Assert.Equal(MetricType.Counter, featureGate.MetricType);
+            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
         }
 
         [Fact]
@@ -146,7 +146,7 @@ public class FeatureGateBuilderUnitTests
 
             // Assert
             Assert.Equal(featureGateKey, featureGate.Key);
-            Assert.Equal(MetricType.Counter, featureGate.MetricType);
+            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
         }
     }
 

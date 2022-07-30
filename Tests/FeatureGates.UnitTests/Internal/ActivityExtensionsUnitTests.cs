@@ -1,8 +1,8 @@
-namespace FeatureGates.UnitTests.Instrumentation;
+namespace FeatureGates.UnitTests.Internal;
 
 using System;
 using System.Diagnostics;
-using FeatureGates.Instrumentation;
+using FeatureGates.Internal;
 using Xunit;
 
 public static class ActivityExtensionsUnitTests

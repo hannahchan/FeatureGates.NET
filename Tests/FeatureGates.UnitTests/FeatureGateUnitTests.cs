@@ -3,7 +3,7 @@ namespace FeatureGates.UnitTests;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using FeatureGates.Instrumentation;
+using FeatureGates.Internal;
 using Xunit;
 
 public class FeatureGateUnitTests
@@ -104,7 +104,7 @@ public class FeatureGateUnitTests
             // Act
             Exception gateOpenedResult = Record.Exception(() => new FeatureGate(
                 featureGateKey: "myFeatureGateKey",
-                metricType: MetricType.Histogram,
+                instrumentType: InstrumentType.Histogram,
                 controlledBy: () => true,
                 whenOpened: null,
                 whenClosed: null)
@@ -112,7 +112,7 @@ public class FeatureGateUnitTests
 
             Exception gateClosedResult = Record.Exception(() => new FeatureGate(
                 featureGateKey: "myFeatureGateKey",
-                metricType: MetricType.Histogram,
+                instrumentType: InstrumentType.Histogram,
                 controlledBy: () => false,
                 whenOpened: null,
                 whenClosed: null)
@@ -139,7 +139,7 @@ public class FeatureGateUnitTests
             // Act
             Exception gateOpenedResult = Record.Exception(() => new FeatureGate(
                 featureGateKey: "myFeatureGateKey",
-                metricType: MetricType.Histogram,
+                instrumentType: InstrumentType.Histogram,
                 controlledBy: () => true,
                 whenOpened: () => throw new Exception("Opened gate threw an exception."),
                 whenClosed: () => throw new Exception("Closed gate threw an exception."))
@@ -147,7 +147,7 @@ public class FeatureGateUnitTests
 
             Exception gateClosedResult = Record.Exception(() => new FeatureGate(
                 featureGateKey: "myFeatureGateKey",
-                metricType: MetricType.Histogram,
+                instrumentType: InstrumentType.Histogram,
                 controlledBy: () => false,
                 whenOpened: () => throw new Exception("Opened gate threw an exception."),
                 whenClosed: () => throw new Exception("Closed gate threw an exception."))
@@ -162,9 +162,9 @@ public class FeatureGateUnitTests
         }
 
         [Theory]
-        [InlineData(MetricType.Counter)]
-        [InlineData(MetricType.Histogram)]
-        internal void When_FeatureGateInvokedWithMetricType_Expect_NoException(MetricType metricType)
+        [InlineData(InstrumentType.Counter)]
+        [InlineData(InstrumentType.Histogram)]
+        internal void When_FeatureGateInvokedWithInstrumentType_Expect_NoException(InstrumentType instrumentType)
         {
             // Arrange
             Exception gateOpenedResult;
@@ -173,7 +173,7 @@ public class FeatureGateUnitTests
             // Act
             gateOpenedResult = Record.Exception(() => new FeatureGate(
                 featureGateKey: "myFeatureGateKey",
-                metricType: metricType,
+                instrumentType: instrumentType,
                 controlledBy: () => true,
                 whenOpened: null,
                 whenClosed: null)
@@ -181,7 +181,7 @@ public class FeatureGateUnitTests
 
             gateClosedResult = Record.Exception(() => new FeatureGate(
                 featureGateKey: "myFeatureGateKey",
-                metricType: metricType,
+                instrumentType: instrumentType,
                 controlledBy: () => false,
                 whenOpened: null,
                 whenClosed: null)
@@ -193,9 +193,9 @@ public class FeatureGateUnitTests
         }
 
         [Theory]
-        [InlineData(MetricType.Counter)]
-        [InlineData(MetricType.Histogram)]
-        internal void When_FeatureGateInvokedWithMetricType_Expect_Exception(MetricType metricType)
+        [InlineData(InstrumentType.Counter)]
+        [InlineData(InstrumentType.Histogram)]
+        internal void When_FeatureGateInvokedWithInstrumentType_Expect_Exception(InstrumentType instrumentType)
         {
             // Arrange
             Exception gateOpenedResult;
@@ -204,7 +204,7 @@ public class FeatureGateUnitTests
             // Act
             gateOpenedResult = Record.Exception(() => new FeatureGate(
                 featureGateKey: "myFeatureGateKey",
-                metricType: metricType,
+                instrumentType: instrumentType,
                 controlledBy: () => true,
                 whenOpened: () => throw new Exception("Opened gate threw an exception."),
                 whenClosed: () => throw new Exception("Closed gate threw an exception."))
@@ -212,7 +212,7 @@ public class FeatureGateUnitTests
 
             gateClosedResult = Record.Exception(() => new FeatureGate(
                 featureGateKey: "myFeatureGateKey",
-                metricType: metricType,
+                instrumentType: instrumentType,
                 controlledBy: () => false,
                 whenOpened: () => throw new Exception("Opened gate threw an exception."),
                 whenClosed: () => throw new Exception("Closed gate threw an exception."))

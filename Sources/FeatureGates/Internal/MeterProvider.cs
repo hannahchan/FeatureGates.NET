@@ -1,4 +1,4 @@
-namespace FeatureGates.Instrumentation;
+namespace FeatureGates.Internal;
 
 using System.Diagnostics.Metrics;
 

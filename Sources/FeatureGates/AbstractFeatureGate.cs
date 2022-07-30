@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
-using FeatureGates.Instrumentation;
+using FeatureGates.Internal;
 
 public abstract class AbstractFeatureGate
 {
@@ -18,24 +18,25 @@ public abstract class AbstractFeatureGate
         unit: "ms", // milliseconds
         description: "measures the duration of feature gate executions");
 
-    protected AbstractFeatureGate(string featureGateKey, MetricType metricType)
+    protected AbstractFeatureGate(string featureGateKey, InstrumentType instrumentType)
     {
         this.Key = featureGateKey;
-        this.MetricType = metricType;
+        this.InstrumentType = instrumentType;
     }
 
+    /// <summary>The state of the feature gate.</summary>
     protected enum FeatureGateState
     {
-        /// <summary>Indicates feature gate is closed.</summary>
+        /// <summary>Represents a closed feature gate.</summary>
         Closed,
 
-        /// <summary>Indicates feature gate is opened.</summary>
+        /// <summary>Represents an opened feature gate.</summary>
         Opened,
     }
 
     public string Key { get; }
 
-    public MetricType MetricType { get; }
+    public InstrumentType InstrumentType { get; }
 
     protected void Invoke(FeatureGateState featureGateState, Action? action)
     {
@@ -54,7 +55,7 @@ public abstract class AbstractFeatureGate
         }
         catch (Exception exception)
         {
-            tags.Add(SemanticConventions.Metrics.FeatureGateExceptionType, exception.GetType().FullName);
+            tags.Add(MetricConventions.AttributeFeatureGateExceptionType, exception.GetType().FullName);
             activity?.RecordException(exception);
             throw;
         }
@@ -62,13 +63,13 @@ public abstract class AbstractFeatureGate
         {
             stopwatch.Stop();
 
-            switch (this.MetricType)
+            switch (this.InstrumentType)
             {
-                case MetricType.Counter:
+                case InstrumentType.Counter:
                     ExecutionCounter.Add(1, tags);
                     break;
 
-                case MetricType.Histogram:
+                case InstrumentType.Histogram:
                     ExecutionDurationHistogram.Record(stopwatch.Elapsed.TotalMilliseconds, tags);
                     break;
 
@@ -90,7 +91,7 @@ public abstract class AbstractFeatureGate
         }
         catch (Exception exception)
         {
-            tags.Add(SemanticConventions.Metrics.FeatureGateExceptionType, exception.GetType().FullName);
+            tags.Add(MetricConventions.AttributeFeatureGateExceptionType, exception.GetType().FullName);
             activity?.RecordException(exception);
             throw;
         }
@@ -98,13 +99,13 @@ public abstract class AbstractFeatureGate
         {
             stopwatch.Stop();
 
-            switch (this.MetricType)
+            switch (this.InstrumentType)
             {
-                case MetricType.Counter:
+                case InstrumentType.Counter:
                     ExecutionCounter.Add(1, tags);
                     break;
 
-                case MetricType.Histogram:
+                case InstrumentType.Histogram:
                     ExecutionDurationHistogram.Record(stopwatch.Elapsed.TotalMilliseconds, tags);
                     break;
 
@@ -131,7 +132,7 @@ public abstract class AbstractFeatureGate
         }
         catch (Exception exception)
         {
-            tags.Add(SemanticConventions.Metrics.FeatureGateExceptionType, exception.GetType().FullName);
+            tags.Add(MetricConventions.AttributeFeatureGateExceptionType, exception.GetType().FullName);
             activity?.RecordException(exception);
             throw;
         }
@@ -139,13 +140,13 @@ public abstract class AbstractFeatureGate
         {
             stopwatch.Stop();
 
-            switch (this.MetricType)
+            switch (this.InstrumentType)
             {
-                case MetricType.Counter:
+                case InstrumentType.Counter:
                     ExecutionCounter.Add(1, tags);
                     break;
 
-                case MetricType.Histogram:
+                case InstrumentType.Histogram:
                     ExecutionDurationHistogram.Record(stopwatch.Elapsed.TotalMilliseconds, tags);
                     break;
 
@@ -167,7 +168,7 @@ public abstract class AbstractFeatureGate
         }
         catch (Exception exception)
         {
-            tags.Add(SemanticConventions.Metrics.FeatureGateExceptionType, exception.GetType().FullName);
+            tags.Add(MetricConventions.AttributeFeatureGateExceptionType, exception.GetType().FullName);
             activity?.RecordException(exception);
             throw;
         }
@@ -175,13 +176,13 @@ public abstract class AbstractFeatureGate
         {
             stopwatch.Stop();
 
-            switch (this.MetricType)
+            switch (this.InstrumentType)
             {
-                case MetricType.Counter:
+                case InstrumentType.Counter:
                     ExecutionCounter.Add(1, tags);
                     break;
 
-                case MetricType.Histogram:
+                case InstrumentType.Histogram:
                     ExecutionDurationHistogram.Record(stopwatch.Elapsed.TotalMilliseconds, tags);
                     break;
 
@@ -195,34 +196,15 @@ public abstract class AbstractFeatureGate
     {
         return new TagList
         {
-            { SemanticConventions.Metrics.FeatureGateKey, featureGateKey },
-            { SemanticConventions.Metrics.FeatureGateState, featureGateState },
+            { MetricConventions.AttributeFeatureGateKey, featureGateKey },
+            { MetricConventions.AttributeFeatureGateState, featureGateState },
         };
     }
 
     private static Activity? StartActivity(string featureGateKey, FeatureGateState featureGateState)
     {
         return ActivityProvider.StartActivity("FeatureGate")
-            ?.AddTag(SemanticConventions.Traces.FeatureGateKey, featureGateKey)
-            .AddTag(SemanticConventions.Traces.FeatureGateState, featureGateState);
-    }
-
-    private static class SemanticConventions
-    {
-        public static class Metrics
-        {
-            public const string FeatureGateKey = "key";
-
-            public const string FeatureGateState = "state";
-
-            public const string FeatureGateExceptionType = "exception";
-        }
-
-        public static class Traces
-        {
-            public const string FeatureGateKey = "feature.gate.key";
-
-            public const string FeatureGateState = "feature.gate.state";
-        }
+            ?.AddTag(TraceConventions.AttributeFeatureGateKey, featureGateKey)
+            .AddTag(TraceConventions.AttributeFeatureGateState, featureGateState);
     }
 }

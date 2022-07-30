@@ -12,15 +12,15 @@ public class FeatureGateAsync<TResult> : AbstractFeatureGate
     private readonly Func<Task<TResult>>? whenClosed;
 
     public FeatureGateAsync(string featureGateKey, Func<Task<bool>> controlledBy, Func<Task<TResult>>? whenOpened, Func<Task<TResult>>? whenClosed)
-        : base(featureGateKey, MetricType.Counter)
+        : base(featureGateKey, InstrumentType.Counter)
     {
         this.controlledBy = controlledBy;
         this.whenOpened = whenOpened;
         this.whenClosed = whenClosed;
     }
 
-    public FeatureGateAsync(string featureGateKey, MetricType metricType, Func<Task<bool>> controlledBy, Func<Task<TResult>>? whenOpened, Func<Task<TResult>>? whenClosed)
-        : base(featureGateKey, metricType)
+    public FeatureGateAsync(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task<TResult>>? whenOpened, Func<Task<TResult>>? whenClosed)
+        : base(featureGateKey, instrumentType)
     {
         this.controlledBy = controlledBy;
         this.whenOpened = whenOpened;
@@ -38,7 +38,7 @@ public class FeatureGateAsync<TResult> : AbstractFeatureGate
     {
         return new FeatureGateAsync<TResult>(
             featureGateKey: this.Key,
-            metricType: this.MetricType,
+            instrumentType: this.InstrumentType,
             controlledBy: this.controlledBy,
             whenOpened: function,
             whenClosed: this.whenClosed);
@@ -48,7 +48,7 @@ public class FeatureGateAsync<TResult> : AbstractFeatureGate
     {
         return new FeatureGateAsync<TResult>(
             featureGateKey: this.Key,
-            metricType: this.MetricType,
+            instrumentType: this.InstrumentType,
             controlledBy: this.controlledBy,
             whenOpened: function == null ? null : () => Task.Run(function),
             whenClosed: this.whenClosed);
@@ -58,7 +58,7 @@ public class FeatureGateAsync<TResult> : AbstractFeatureGate
     {
         return new FeatureGateAsync<TResult>(
             featureGateKey: this.Key,
-            metricType: this.MetricType,
+            instrumentType: this.InstrumentType,
             controlledBy: this.controlledBy,
             whenOpened: this.whenOpened,
             whenClosed: function);
@@ -68,7 +68,7 @@ public class FeatureGateAsync<TResult> : AbstractFeatureGate
     {
         return new FeatureGateAsync<TResult>(
             featureGateKey: this.Key,
-            metricType: this.MetricType,
+            instrumentType: this.InstrumentType,
             controlledBy: this.controlledBy,
             whenOpened: this.whenOpened,
             whenClosed: function == null ? null : () => Task.Run(function));
