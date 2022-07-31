@@ -11,7 +11,7 @@
     <Authors>Hannah Chan</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hannahchan/FeatureGates.NET</PackageProjectUrl>
-    <Description>Release observable features by using feature gates, pre-instrumented abstractions that replace 'if' statements.</Description>
+    <Description>Release observable features by using FeatureGates, pre-instrumented abstractions that replace 'if' statements.</Description>
     <PackageTags></PackageTags>
   </PropertyGroup>
 
