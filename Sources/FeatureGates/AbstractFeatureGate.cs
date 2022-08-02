@@ -3,6 +3,7 @@ namespace FeatureGates;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Globalization;
 using System.Threading.Tasks;
 using FeatureGates.Internal;
 
@@ -11,7 +12,7 @@ public abstract class AbstractFeatureGate
     private static readonly Counter<int> ExecutionCounter = MeterProvider.Meter.CreateCounter<int>(
         name: "feature.gate.executions",
         unit: null,
-        description: "measure the number of times a feature gate was executed");
+        description: "measures the number of times a feature gate has been executed");
 
     private static readonly Histogram<double> ExecutionDurationHistogram = MeterProvider.Meter.CreateHistogram<double>(
         name: "feature.gate.duration",
@@ -40,7 +41,7 @@ public abstract class AbstractFeatureGate
 
     protected void Invoke(FeatureGateState featureGateState, Action? action)
     {
-        TagList tags = CreateTags(this.Key, featureGateState);
+        bool featureGateException = false;
         using Activity? activity = StartActivity(this.Key, featureGateState);
         Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -55,33 +56,20 @@ public abstract class AbstractFeatureGate
         }
         catch (Exception exception)
         {
-            tags.Add(MetricConventions.AttributeFeatureGateExceptionType, exception.GetType().FullName);
+            featureGateException = true;
             activity?.RecordException(exception);
             throw;
         }
         finally
         {
             stopwatch.Stop();
-
-            switch (this.InstrumentType)
-            {
-                case InstrumentType.Counter:
-                    ExecutionCounter.Add(1, tags);
-                    break;
-
-                case InstrumentType.Histogram:
-                    ExecutionDurationHistogram.Record(stopwatch.Elapsed.TotalMilliseconds, tags);
-                    break;
-
-                default:
-                    break;
-            }
+            this.Record(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
     protected TResult? Invoke<TResult>(FeatureGateState featureGateState, Func<TResult>? function)
     {
-        TagList tags = CreateTags(this.Key, featureGateState);
+        bool featureGateException = false;
         using Activity? activity = StartActivity(this.Key, featureGateState);
         Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -91,33 +79,20 @@ public abstract class AbstractFeatureGate
         }
         catch (Exception exception)
         {
-            tags.Add(MetricConventions.AttributeFeatureGateExceptionType, exception.GetType().FullName);
+            featureGateException = true;
             activity?.RecordException(exception);
             throw;
         }
         finally
         {
             stopwatch.Stop();
-
-            switch (this.InstrumentType)
-            {
-                case InstrumentType.Counter:
-                    ExecutionCounter.Add(1, tags);
-                    break;
-
-                case InstrumentType.Histogram:
-                    ExecutionDurationHistogram.Record(stopwatch.Elapsed.TotalMilliseconds, tags);
-                    break;
-
-                default:
-                    break;
-            }
+            this.Record(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
     protected async Task Invoke(FeatureGateState featureGateState, Func<Task>? function)
     {
-        TagList tags = CreateTags(this.Key, featureGateState);
+        bool featureGateException = false;
         using Activity? activity = StartActivity(this.Key, featureGateState);
         Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -132,33 +107,20 @@ public abstract class AbstractFeatureGate
         }
         catch (Exception exception)
         {
-            tags.Add(MetricConventions.AttributeFeatureGateExceptionType, exception.GetType().FullName);
+            featureGateException = true;
             activity?.RecordException(exception);
             throw;
         }
         finally
         {
             stopwatch.Stop();
-
-            switch (this.InstrumentType)
-            {
-                case InstrumentType.Counter:
-                    ExecutionCounter.Add(1, tags);
-                    break;
-
-                case InstrumentType.Histogram:
-                    ExecutionDurationHistogram.Record(stopwatch.Elapsed.TotalMilliseconds, tags);
-                    break;
-
-                default:
-                    break;
-            }
+            this.Record(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
     protected async Task<TResult?> Invoke<TResult>(FeatureGateState featureGateState, Func<Task<TResult>>? function)
     {
-        TagList tags = CreateTags(this.Key, featureGateState);
+        bool featureGateException = false;
         using Activity? activity = StartActivity(this.Key, featureGateState);
         Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -168,37 +130,15 @@ public abstract class AbstractFeatureGate
         }
         catch (Exception exception)
         {
-            tags.Add(MetricConventions.AttributeFeatureGateExceptionType, exception.GetType().FullName);
+            featureGateException = true;
             activity?.RecordException(exception);
             throw;
         }
         finally
         {
             stopwatch.Stop();
-
-            switch (this.InstrumentType)
-            {
-                case InstrumentType.Counter:
-                    ExecutionCounter.Add(1, tags);
-                    break;
-
-                case InstrumentType.Histogram:
-                    ExecutionDurationHistogram.Record(stopwatch.Elapsed.TotalMilliseconds, tags);
-                    break;
-
-                default:
-                    break;
-            }
+            this.Record(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
-    }
-
-    private static TagList CreateTags(string featureGateKey, FeatureGateState featureGateState)
-    {
-        return new TagList
-        {
-            { MetricConventions.AttributeFeatureGateKey, featureGateKey },
-            { MetricConventions.AttributeFeatureGateState, featureGateState },
-        };
     }
 
     private static Activity? StartActivity(string featureGateKey, FeatureGateState featureGateState)
@@ -206,5 +146,32 @@ public abstract class AbstractFeatureGate
         return ActivityProvider.StartActivity("FeatureGate")
             ?.AddTag(TraceConventions.AttributeFeatureGateKey, featureGateKey)
             .AddTag(TraceConventions.AttributeFeatureGateState, featureGateState);
+    }
+
+    private static TagList CreateTags(string featureGateKey, FeatureGateState featureGateState, bool featureGateException)
+    {
+        return new TagList
+        {
+            { MetricConventions.AttributeFeatureGateKey, featureGateKey },
+            { MetricConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture) },
+            { MetricConventions.AttributeFeatureGateException, featureGateException.ToString().ToLower(CultureInfo.InvariantCulture) },
+        };
+    }
+
+    private void Record(TimeSpan elapsed, TagList tags)
+    {
+        switch (this.InstrumentType)
+        {
+            case InstrumentType.Counter:
+                ExecutionCounter.Add(1, tags);
+                break;
+
+            case InstrumentType.Histogram:
+                ExecutionDurationHistogram.Record(elapsed.TotalMilliseconds, tags);
+                break;
+
+            default:
+                break;
+        }
     }
 }

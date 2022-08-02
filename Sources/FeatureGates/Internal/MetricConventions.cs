@@ -6,5 +6,5 @@ internal static class MetricConventions
 
     public const string AttributeFeatureGateState = "feature.gate.state";
 
-    public const string AttributeFeatureGateExceptionType = "exception.type";
+    public const string AttributeFeatureGateException = "feature.gate.exception";
 }
