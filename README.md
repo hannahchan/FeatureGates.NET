@@ -99,9 +99,7 @@ The metrics that feature gates output can be aggregated or filtered on the follo
 
 ### Collection
 
-In order to collect metrics from your feature gates, you will need to subscribe to the meter named `FeatureGates` in the FeatureGates package using a listener. Please note that the meter and the package have the same name.
-
-If using the [OpenTelemetry .NET](https://github.com/open-telemetry/opentelemetry-dotnet) SDK, you can do this by calling the `AddMeter()` method while building your `MeterProvider` in your application. For example;
+In order to collect metrics from your feature gates, you will need to subscribe to the meter named `FeatureGates` in the FeatureGates package using a listener. If using the [OpenTelemetry .NET](https://github.com/open-telemetry/opentelemetry-dotnet) SDK, you can do this by calling the `AddMeter()` method while building your `MeterProvider` in your application. For example;
 
 ```C#
 using MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
