@@ -179,7 +179,7 @@ public class FeatureGateBuilderUnitTests
 
         public static Task<TResult> FunctionAsync<TResult>()
         {
-            return default;
+            return Task.FromResult<TResult>(default);
         }
     }
 }
