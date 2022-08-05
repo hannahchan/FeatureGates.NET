@@ -13,6 +13,7 @@
     <PackageProjectUrl>https://github.com/hannahchan/FeatureGates.NET</PackageProjectUrl>
     <Description>Release observable features by using FeatureGates, pre-instrumented abstractions that replace 'if' statements.</Description>
     <PackageTags></PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(CAKE_BUILD)' == 'true'">
@@ -29,6 +30,10 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="OpenTelemetry.Api" Version="1.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 
 </Project>
