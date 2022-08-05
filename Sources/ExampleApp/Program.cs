@@ -14,7 +14,7 @@ internal static class Program
     private static void Main()
     {
         using MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
-            .AddMeter("FeatureGates")
+            .AddFeatureGates()
             .AddPrometheusExporter(options =>
             {
                 options.StartHttpListener = true;

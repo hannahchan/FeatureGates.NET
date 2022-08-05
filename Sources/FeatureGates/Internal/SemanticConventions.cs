@@ -1,6 +1,6 @@
 namespace FeatureGates.Internal;
 
-internal static class MetricConventions
+internal static class SemanticConventions
 {
     public const string AttributeFeatureGateKey = "feature.gate.key";
 

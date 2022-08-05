@@ -5,8 +5,8 @@ using System.Diagnostics;
 internal static class ActivityProvider
 {
     private static readonly ActivitySource ActivitySource = new ActivitySource(
-        name: typeof(ActivityProvider).Assembly.GetName().Name!,
-        version: typeof(ActivityProvider).Assembly.GetName().Version!.ToString());
+        name: Library.ActivitySource.Name,
+        version: Library.ActivitySource.Version);
 
     public static void AddActivityListener(ActivityListener listener)
     {

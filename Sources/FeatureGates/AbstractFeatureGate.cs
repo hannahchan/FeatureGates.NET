@@ -6,6 +6,7 @@ using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Threading.Tasks;
 using FeatureGates.Internal;
+using OpenTelemetry.Trace;
 
 public abstract class AbstractFeatureGate
 {
@@ -144,17 +145,17 @@ public abstract class AbstractFeatureGate
     private static Activity? StartActivity(string featureGateKey, FeatureGateState featureGateState)
     {
         return ActivityProvider.StartActivity("FeatureGate")
-            ?.AddTag(TraceConventions.AttributeFeatureGateKey, featureGateKey)
-            .AddTag(TraceConventions.AttributeFeatureGateState, featureGateState);
+            ?.AddTag(SemanticConventions.AttributeFeatureGateKey, featureGateKey)
+            .AddTag(SemanticConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture));
     }
 
     private static TagList CreateTags(string featureGateKey, FeatureGateState featureGateState, bool featureGateException)
     {
         return new TagList
         {
-            { MetricConventions.AttributeFeatureGateKey, featureGateKey },
-            { MetricConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture) },
-            { MetricConventions.AttributeFeatureGateException, featureGateException.ToString().ToLower(CultureInfo.InvariantCulture) },
+            { SemanticConventions.AttributeFeatureGateKey, featureGateKey },
+            { SemanticConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture) },
+            { SemanticConventions.AttributeFeatureGateException, featureGateException.ToString().ToLower(CultureInfo.InvariantCulture) },
         };
     }
 
