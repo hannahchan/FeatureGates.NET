@@ -10,12 +10,12 @@ using OpenTelemetry.Trace;
 
 public abstract class AbstractFeatureGate
 {
-    private static readonly Counter<int> ExecutionCounter = MeterProvider.Meter.CreateCounter<int>(
+    private static readonly Counter<int> ExecutionCounter = Library.Meter.CreateCounter<int>(
         name: "feature.gate.executions",
         unit: null,
         description: "measures the number of times a feature gate has been executed");
 
-    private static readonly Histogram<double> ExecutionDurationHistogram = MeterProvider.Meter.CreateHistogram<double>(
+    private static readonly Histogram<double> ExecutionDurationHistogram = Library.Meter.CreateHistogram<double>(
         name: "feature.gate.duration",
         unit: "ms", // milliseconds
         description: "measures the duration of feature gate executions");
@@ -144,9 +144,9 @@ public abstract class AbstractFeatureGate
 
     private static Activity? StartActivity(string featureGateKey, FeatureGateState featureGateState)
     {
-        return ActivityProvider.StartActivity("FeatureGate")
-            ?.AddTag(SemanticConventions.AttributeFeatureGateKey, featureGateKey)
-            .AddTag(SemanticConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture));
+        return Library.ActivitySource.StartActivity("FeatureGate")
+            ?.SetTag(SemanticConventions.AttributeFeatureGateKey, featureGateKey)
+            .SetTag(SemanticConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture));
     }
 
     private static TagList CreateTags(string featureGateKey, FeatureGateState featureGateState, bool featureGateException)

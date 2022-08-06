@@ -3,7 +3,6 @@ namespace FeatureGates.UnitTests;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using FeatureGates.Internal;
 using Xunit;
 
 public class FeatureGateUnitTests
@@ -99,7 +98,7 @@ public class FeatureGateUnitTests
                 Sample = (ref ActivityCreationOptions<ActivityContext> options) => ActivitySamplingResult.AllData,
             };
 
-            ActivityProvider.AddActivityListener(listener);
+            ActivitySource.AddActivityListener(listener);
 
             // Act
             Exception gateOpenedResult = Record.Exception(() => new FeatureGate(
@@ -134,7 +133,7 @@ public class FeatureGateUnitTests
                 Sample = (ref ActivityCreationOptions<ActivityContext> options) => ActivitySamplingResult.AllData,
             };
 
-            ActivityProvider.AddActivityListener(listener);
+            ActivitySource.AddActivityListener(listener);
 
             // Act
             Exception gateOpenedResult = Record.Exception(() => new FeatureGate(
