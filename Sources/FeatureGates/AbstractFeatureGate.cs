@@ -54,11 +54,16 @@ public abstract class AbstractFeatureGate
             }
 
             action();
+            activity?.SetStatus(ActivityStatusCode.Ok);
         }
         catch (Exception exception)
         {
             featureGateException = true;
-            activity?.RecordException(exception);
+
+            activity
+                ?.SetStatus(ActivityStatusCode.Error, exception.Message)
+                .RecordException(exception);
+
             throw;
         }
         finally
@@ -76,12 +81,24 @@ public abstract class AbstractFeatureGate
 
         try
         {
-            return function == null ? default : function();
+            if (function == null)
+            {
+                return default;
+            }
+
+            TResult result = function();
+            activity?.SetStatus(ActivityStatusCode.Ok);
+
+            return result;
         }
         catch (Exception exception)
         {
             featureGateException = true;
-            activity?.RecordException(exception);
+
+            activity
+                ?.SetStatus(ActivityStatusCode.Error, exception.Message)
+                .RecordException(exception);
+
             throw;
         }
         finally
@@ -105,11 +122,16 @@ public abstract class AbstractFeatureGate
             }
 
             await function();
+            activity?.SetStatus(ActivityStatusCode.Ok);
         }
         catch (Exception exception)
         {
             featureGateException = true;
-            activity?.RecordException(exception);
+
+            activity
+                ?.SetStatus(ActivityStatusCode.Error, exception.Message)
+                .RecordException(exception);
+
             throw;
         }
         finally
@@ -127,12 +149,24 @@ public abstract class AbstractFeatureGate
 
         try
         {
-            return function == null ? default : await function();
+            if (function == null)
+            {
+                return default;
+            }
+
+            TResult result = await function();
+            activity?.SetStatus(ActivityStatusCode.Ok);
+
+            return result;
         }
         catch (Exception exception)
         {
             featureGateException = true;
-            activity?.RecordException(exception);
+
+            activity
+                ?.SetStatus(ActivityStatusCode.Error, exception.Message)
+                .RecordException(exception);
+
             throw;
         }
         finally
