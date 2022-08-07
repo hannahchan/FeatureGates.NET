@@ -178,7 +178,7 @@ public abstract class AbstractFeatureGate
 
     private static Activity? StartActivity(string featureGateKey, FeatureGateState featureGateState)
     {
-        return Library.ActivitySource.StartActivity("FeatureGate")
+        return Library.ActivitySource.StartActivity("FeatureGate", ActivityKind.Internal)
             ?.SetTag(SemanticConventions.AttributeFeatureGateKey, featureGateKey)
             .SetTag(SemanticConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture));
     }
