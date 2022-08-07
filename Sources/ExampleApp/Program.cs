@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FeatureGates;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 internal static class Program
 {
@@ -22,6 +23,10 @@ internal static class Program
                 options.ScrapeEndpointPath = "/metrics";
                 options.ScrapeResponseCacheDurationMilliseconds = 0;
             })
+            .Build();
+
+        using TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
+            .AddFeatureGates()
             .Build();
 
         FeatureGateAsync featureGate1 = FeatureGate
