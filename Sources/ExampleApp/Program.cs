@@ -8,13 +8,18 @@ using System.Threading.Tasks;
 using FeatureGates;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 internal static class Program
 {
     private static void Main()
     {
+        ResourceBuilder resourceBuilder = ResourceBuilder.CreateDefault()
+            .AddService("ExampleApp");
+
         using MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
+            .SetResourceBuilder(resourceBuilder)
             .AddFeatureGates()
             .AddPrometheusExporter(options =>
             {
@@ -26,6 +31,7 @@ internal static class Program
             .Build();
 
         using TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
+            .SetResourceBuilder(resourceBuilder)
             .AddFeatureGates()
             .Build();
 
