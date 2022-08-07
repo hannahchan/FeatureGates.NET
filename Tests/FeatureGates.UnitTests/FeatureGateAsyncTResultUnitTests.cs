@@ -7,7 +7,7 @@ using Xunit;
 
 public class FeatureGateAsyncTResultUnitTests
 {
-    [Collection(TestCollection.Activity)]
+    [Collection(TestCollection.FeatureGateInvocations)]
     public class Invoke
     {
         [Theory]

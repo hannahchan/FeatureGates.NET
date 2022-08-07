@@ -23,7 +23,7 @@ public class FeatureGateUnitTests
         }
     }
 
-    [Collection(TestCollection.Activity)]
+    [Collection(TestCollection.FeatureGateInvocations)]
     public class Invoke
     {
         [Theory]

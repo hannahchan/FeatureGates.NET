@@ -2,5 +2,5 @@ namespace FeatureGates.UnitTests;
 
 public static class TestCollection
 {
-    public const string Activity = nameof(Activity);
+    public const string FeatureGateInvocations = nameof(FeatureGateInvocations);
 }
