@@ -54,22 +54,18 @@ public abstract class AbstractFeatureGate
             }
 
             action();
-            activity?.SetStatus(ActivityStatusCode.Ok);
         }
         catch (Exception exception)
         {
             featureGateException = true;
-
-            activity
-                ?.SetStatus(ActivityStatusCode.Error, exception.Message)
-                .RecordException(exception);
-
+            activity.RecordException(exception);
             throw;
         }
         finally
         {
             stopwatch.Stop();
-            this.Record(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordActivityStatus(activity, featureGateException);
+            this.RecordMeasurement(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -81,30 +77,19 @@ public abstract class AbstractFeatureGate
 
         try
         {
-            if (function == null)
-            {
-                return default;
-            }
-
-            TResult result = function();
-            activity?.SetStatus(ActivityStatusCode.Ok);
-
-            return result;
+            return function == null ? default : function();
         }
         catch (Exception exception)
         {
             featureGateException = true;
-
-            activity
-                ?.SetStatus(ActivityStatusCode.Error, exception.Message)
-                .RecordException(exception);
-
+            activity.RecordException(exception);
             throw;
         }
         finally
         {
             stopwatch.Stop();
-            this.Record(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordActivityStatus(activity, featureGateException);
+            this.RecordMeasurement(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -122,22 +107,18 @@ public abstract class AbstractFeatureGate
             }
 
             await function();
-            activity?.SetStatus(ActivityStatusCode.Ok);
         }
         catch (Exception exception)
         {
             featureGateException = true;
-
-            activity
-                ?.SetStatus(ActivityStatusCode.Error, exception.Message)
-                .RecordException(exception);
-
+            activity.RecordException(exception);
             throw;
         }
         finally
         {
             stopwatch.Stop();
-            this.Record(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordActivityStatus(activity, featureGateException);
+            this.RecordMeasurement(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -149,30 +130,19 @@ public abstract class AbstractFeatureGate
 
         try
         {
-            if (function == null)
-            {
-                return default;
-            }
-
-            TResult result = await function();
-            activity?.SetStatus(ActivityStatusCode.Ok);
-
-            return result;
+            return function == null ? default : await function();
         }
         catch (Exception exception)
         {
             featureGateException = true;
-
-            activity
-                ?.SetStatus(ActivityStatusCode.Error, exception.Message)
-                .RecordException(exception);
-
+            activity.RecordException(exception);
             throw;
         }
         finally
         {
             stopwatch.Stop();
-            this.Record(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordActivityStatus(activity, featureGateException);
+            this.RecordMeasurement(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -193,7 +163,18 @@ public abstract class AbstractFeatureGate
         };
     }
 
-    private void Record(TimeSpan elapsed, TagList tags)
+    private static void RecordActivityStatus(Activity? activity, bool featureGateException)
+    {
+        if (featureGateException)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error, "An uncaught exception occurred during feature gate execution.");
+            return;
+        }
+
+        activity?.SetStatus(ActivityStatusCode.Ok);
+    }
+
+    private void RecordMeasurement(TimeSpan elapsed, TagList tags)
     {
         switch (this.InstrumentType)
         {

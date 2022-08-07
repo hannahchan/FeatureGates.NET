@@ -91,11 +91,11 @@ Depending on the instrument type configured for a feature gate, feature gates wi
 
 The metrics that feature gates output can be aggregated or filtered on the following dimensions.
 
-| Name                       | Description                                                                |
-| -------------------------  | -------------------------------------------------------------------------- |
-| `feature.gate.key`         | The unique string identifier for a feature gate.                           |
-| `feature.gate.state`       | Whether a feature gate was executed as `opened` or `closed`.               |
-| `feature.gate.exception`   | `true` if execution resulted in an uncaught exception, otherwise `false`.  |
+| Name                       | Description                                                                    |
+| -------------------------  | ------------------------------------------------------------------------------ |
+| `feature.gate.key`         | The unique string identifier for a feature gate.                               |
+| `feature.gate.state`       | Whether a feature gate was executed as `opened` or `closed`.                   |
+| `feature.gate.exception`   | `true` if an uncaught exception occurred during execution, otherwise `false`.  |
 
 ### Collection
 
