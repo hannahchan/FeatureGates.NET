@@ -65,7 +65,7 @@ public abstract class AbstractFeatureGate
         {
             stopwatch.Stop();
             RecordActivityStatus(activity, featureGateException);
-            this.RecordMeasurement(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordMeasurement(this.InstrumentType, stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -89,7 +89,7 @@ public abstract class AbstractFeatureGate
         {
             stopwatch.Stop();
             RecordActivityStatus(activity, featureGateException);
-            this.RecordMeasurement(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordMeasurement(this.InstrumentType, stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -118,7 +118,7 @@ public abstract class AbstractFeatureGate
         {
             stopwatch.Stop();
             RecordActivityStatus(activity, featureGateException);
-            this.RecordMeasurement(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordMeasurement(this.InstrumentType, stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -142,7 +142,7 @@ public abstract class AbstractFeatureGate
         {
             stopwatch.Stop();
             RecordActivityStatus(activity, featureGateException);
-            this.RecordMeasurement(stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordMeasurement(this.InstrumentType, stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -174,9 +174,9 @@ public abstract class AbstractFeatureGate
         activity?.SetStatus(ActivityStatusCode.Ok);
     }
 
-    private void RecordMeasurement(TimeSpan elapsed, TagList tags)
+    private static void RecordMeasurement(InstrumentType instrumentType, TimeSpan elapsed, TagList tags)
     {
-        switch (this.InstrumentType)
+        switch (instrumentType)
         {
             case InstrumentType.Counter:
                 ExecutionCounter.Add(1, tags);
