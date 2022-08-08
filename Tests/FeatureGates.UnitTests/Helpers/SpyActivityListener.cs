@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-public sealed class ActivityListenerSpy : IDisposable
+public sealed class SpyActivityListener : IDisposable
 {
     private readonly ActivityListener activityListener = new ActivityListener
     {
@@ -15,7 +15,7 @@ public sealed class ActivityListenerSpy : IDisposable
 
     private bool disposed;
 
-    public ActivityListenerSpy()
+    public SpyActivityListener()
     {
         this.activityListener.ActivityStarted = this.ActivityStarted;
         ActivitySource.AddActivityListener(this.activityListener);

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 
-public sealed class MeterListenerSpy : IDisposable
+public sealed class SpyMeterListener : IDisposable
 {
     private readonly MeterListener meterListener = new MeterListener()
     {
@@ -13,7 +13,7 @@ public sealed class MeterListenerSpy : IDisposable
 
     private bool disposed;
 
-    public MeterListenerSpy()
+    public SpyMeterListener()
     {
         this.meterListener.SetMeasurementEventCallback<byte>(this.OnMeasurementRecorded);
         this.meterListener.SetMeasurementEventCallback<short>(this.OnMeasurementRecorded);

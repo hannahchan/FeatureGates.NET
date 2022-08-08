@@ -153,16 +153,6 @@ public abstract class AbstractFeatureGate
             .SetTag(SemanticConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture));
     }
 
-    private static TagList CreateTags(string featureGateKey, FeatureGateState featureGateState, bool featureGateException)
-    {
-        return new TagList
-        {
-            { SemanticConventions.AttributeFeatureGateKey, featureGateKey },
-            { SemanticConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture) },
-            { SemanticConventions.AttributeFeatureGateException, featureGateException.ToString().ToLower(CultureInfo.InvariantCulture) },
-        };
-    }
-
     private static void RecordActivityStatus(Activity? activity, bool featureGateException)
     {
         if (featureGateException)
@@ -172,6 +162,16 @@ public abstract class AbstractFeatureGate
         }
 
         activity?.SetStatus(ActivityStatusCode.Ok);
+    }
+
+    private static TagList CreateTags(string featureGateKey, FeatureGateState featureGateState, bool featureGateException)
+    {
+        return new TagList
+        {
+            { SemanticConventions.AttributeFeatureGateKey, featureGateKey },
+            { SemanticConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture) },
+            { SemanticConventions.AttributeFeatureGateException, featureGateException.ToString().ToLower(CultureInfo.InvariantCulture) },
+        };
     }
 
     private static void RecordMeasurement(InstrumentType instrumentType, TimeSpan elapsed, TagList tags)
