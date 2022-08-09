@@ -40,7 +40,7 @@ public class FeatureGateAsyncTResultUnitTests
                 activityListener.Activities,
                 activity =>
                 {
-                    Assert.Equal("FeatureGate", activity.OperationName);
+                    Assert.Equal("feature.gate.execution", activity.OperationName);
 
                     Assert.Collection(
                         activity.Tags,
@@ -52,7 +52,7 @@ public class FeatureGateAsyncTResultUnitTests
                         tag =>
                         {
                             Assert.Equal("feature.gate.state", tag.Key);
-                            Assert.Equal(isOpened ? "opened" : "closed", tag.Value);
+                            Assert.Equal(isOpened ? "Opened" : "Closed", tag.Value);
                         });
 
                     Assert.Equal(ActivityStatusCode.Ok, activity.Status);
@@ -90,7 +90,7 @@ public class FeatureGateAsyncTResultUnitTests
                         tag =>
                         {
                             Assert.Equal("feature.gate.state", tag.Key);
-                            Assert.Equal(isOpened ? "opened" : "closed", tag.Value);
+                            Assert.Equal(isOpened ? "Opened" : "Closed", tag.Value);
                         },
                         tag =>
                         {
@@ -131,7 +131,7 @@ public class FeatureGateAsyncTResultUnitTests
                 activityListener.Activities,
                 activity =>
                 {
-                    Assert.Equal("FeatureGate", activity.OperationName);
+                    Assert.Equal("feature.gate.execution", activity.OperationName);
 
                     Assert.Collection(
                         activity.Tags,
@@ -143,7 +143,7 @@ public class FeatureGateAsyncTResultUnitTests
                         tag =>
                         {
                             Assert.Equal("feature.gate.state", tag.Key);
-                            Assert.Equal(isOpened ? "opened" : "closed", tag.Value);
+                            Assert.Equal(isOpened ? "Opened" : "Closed", tag.Value);
                         });
 
                     Assert.Equal(ActivityStatusCode.Ok, activity.Status);
@@ -181,7 +181,7 @@ public class FeatureGateAsyncTResultUnitTests
                         tag =>
                         {
                             Assert.Equal("feature.gate.state", tag.Key);
-                            Assert.Equal(isOpened ? "opened" : "closed", tag.Value);
+                            Assert.Equal(isOpened ? "Opened" : "Closed", tag.Value);
                         },
                         tag =>
                         {
@@ -221,7 +221,7 @@ public class FeatureGateAsyncTResultUnitTests
                 activityListener.Activities,
                 activity =>
                 {
-                    Assert.Equal("FeatureGate", activity.OperationName);
+                    Assert.Equal("feature.gate.execution", activity.OperationName);
 
                     Assert.Collection(
                         activity.Tags,
@@ -233,7 +233,7 @@ public class FeatureGateAsyncTResultUnitTests
                         tag =>
                         {
                             Assert.Equal("feature.gate.state", tag.Key);
-                            Assert.Equal(isOpened ? "opened" : "closed", tag.Value);
+                            Assert.Equal(isOpened ? "Opened" : "Closed", tag.Value);
                         });
 
                     Assert.Equal(ActivityStatusCode.Error, activity.Status);
@@ -272,7 +272,7 @@ public class FeatureGateAsyncTResultUnitTests
                         tag =>
                         {
                             Assert.Equal("feature.gate.state", tag.Key);
-                            Assert.Equal(isOpened ? "opened" : "closed", tag.Value);
+                            Assert.Equal(isOpened ? "Opened" : "Closed", tag.Value);
                         },
                         tag =>
                         {

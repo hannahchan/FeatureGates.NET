@@ -148,9 +148,9 @@ public abstract class AbstractFeatureGate
 
     private static Activity? StartActivity(string featureGateKey, FeatureGateState featureGateState)
     {
-        return Library.ActivitySource.StartActivity("FeatureGate", ActivityKind.Internal)
+        return Library.ActivitySource.StartActivity("feature.gate.execution", ActivityKind.Internal)
             ?.SetTag(SemanticConventions.AttributeFeatureGateKey, featureGateKey)
-            .SetTag(SemanticConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture));
+            .SetTag(SemanticConventions.AttributeFeatureGateState, featureGateState.ToString());
     }
 
     private static void RecordActivityStatus(Activity? activity, bool featureGateException)
@@ -169,7 +169,7 @@ public abstract class AbstractFeatureGate
         return new TagList
         {
             { SemanticConventions.AttributeFeatureGateKey, featureGateKey },
-            { SemanticConventions.AttributeFeatureGateState, featureGateState.ToString().ToLower(CultureInfo.InvariantCulture) },
+            { SemanticConventions.AttributeFeatureGateState, featureGateState.ToString() },
             { SemanticConventions.AttributeFeatureGateException, featureGateException.ToString().ToLower(CultureInfo.InvariantCulture) },
         };
     }
