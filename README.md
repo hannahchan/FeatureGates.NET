@@ -101,12 +101,12 @@ The metrics that feature gates output can be aggregated or filtered on the follo
 
 ### Metric Collection
 
-In order to collect metrics from your feature gates, you will need to subscribe to the `Meter` named `FeatureGates`. If using the [OpenTelemetry .NET](https://github.com/open-telemetry/opentelemetry-dotnet) SDK, you can do this by calling the `AddFeatureGates()` extension method while building your `MeterProvider` in your application. For example;
+In order to collect metrics from your feature gates, you will need to subscribe to the `Meter` named `FeatureGates`. If using the [OpenTelemetry .NET](https://github.com/open-telemetry/opentelemetry-dotnet) SDK, you can do this by calling `AddMeter("FeatureGates")` while building your `MeterProvider`. For example;
 
 ```C#
 using MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
     // Other configuration
-    .AddFeatureGates()
+    .AddMeter("FeatureGates")
     // Other configuration
     .Build();
 ```
@@ -149,12 +149,12 @@ When an uncaught exception occurs during a feature gate execution, a span event 
 
 ### Span Collection
 
-In order to collect spans from your feature gates, you will need to subscribe to the `ActivitySource` named `FeatureGates`. If using the [OpenTelemetry .NET](https://github.com/open-telemetry/opentelemetry-dotnet) SDK, you can do this by calling the `AddFeatureGates()` extension method while building your `TracerProvider` in your application. For example;
+In order to collect spans from your feature gates, you will need to subscribe to the `ActivitySource` named `FeatureGates`. If using the [OpenTelemetry .NET](https://github.com/open-telemetry/opentelemetry-dotnet) SDK, you can do this by calling `.AddSource("FeatureGates")` while building your `TracerProvider`. For example;
 
 ```C#
 using TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
     // Other configuration
-    .AddFeatureGates()
+    .AddSource("FeatureGates")
     // Other configuration
     .Build();
 ```
