@@ -3,7 +3,6 @@ namespace FeatureGates;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
-using System.Globalization;
 using System.Threading.Tasks;
 using FeatureGates.Internal;
 using OpenTelemetry.Trace;
@@ -150,7 +149,7 @@ public abstract class AbstractFeatureGate
     {
         return Library.ActivitySource.StartActivity("feature.gate.execution", ActivityKind.Internal)
             ?.SetTag(SemanticConventions.AttributeFeatureGateKey, featureGateKey)
-            .SetTag(SemanticConventions.AttributeFeatureGateState, featureGateState.ToString());
+            .SetTag(SemanticConventions.AttributeFeatureGateState, featureGateState == FeatureGateState.Opened ? "opened" : "closed");
     }
 
     private static void RecordActivityStatus(Activity? activity, bool featureGateException)
@@ -169,8 +168,8 @@ public abstract class AbstractFeatureGate
         return new TagList
         {
             { SemanticConventions.AttributeFeatureGateKey, featureGateKey },
-            { SemanticConventions.AttributeFeatureGateState, featureGateState.ToString() },
-            { SemanticConventions.AttributeFeatureGateException, featureGateException.ToString().ToLower(CultureInfo.InvariantCulture) },
+            { SemanticConventions.AttributeFeatureGateState, featureGateState == FeatureGateState.Opened ? "opened" : "closed" },
+            { SemanticConventions.AttributeFeatureGateException, featureGateException ? "true" : "false" },
         };
     }
 

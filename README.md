@@ -96,7 +96,7 @@ The metrics that feature gates output can be aggregated or filtered on the follo
 | Name                     | Description                                                                   |
 | -----------------------  | ----------------------------------------------------------------------------- |
 | `feature.gate.key`       | The unique string identifier for a feature gate.                              |
-| `feature.gate.state`     | Whether a feature gate was executed as `Opened` or `Closed`.                  |
+| `feature.gate.state`     | Whether a feature gate was executed as `opened` or `closed`.                  |
 | `feature.gate.exception` | `true` if an uncaught exception occurred during execution, otherwise `false`. |
 
 ### Metric Collection
@@ -130,7 +130,7 @@ Spans emitted by feature gates will have the following attributes.
 | Name                      | Description                                                                               |
 | ------------------------- | ----------------------------------------------------------------------------------------- |
 | `feature.gate.key`        | The unique string identifier for a feature gate.                                          |
-| `feature.gate.state`      | Whether a feature gate was executed as `Opened` or `Closed`.                              |
+| `feature.gate.state`      | Whether a feature gate was executed as `opened` or `closed`.                              |
 | `otel.status_code`        | `OK` if the execution was successful otherwise `ERROR` if an uncaught exception occurred. |
 | `otel.status_description` | A description that is only present when `otel.status_code` is set to `ERROR`.             |
 
