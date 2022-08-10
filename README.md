@@ -149,7 +149,7 @@ When an uncaught exception occurs during a feature gate execution, a span event 
 
 ### Span Collection
 
-In order to collect spans from your feature gates, you will need to subscribe to the `ActivitySource` named `FeatureGates`. If using the [OpenTelemetry .NET](https://github.com/open-telemetry/opentelemetry-dotnet) SDK, you can do this by calling `.AddSource("FeatureGates")` while building your `TracerProvider`. For example;
+In order to collect spans from your feature gates, you will need to subscribe to the `ActivitySource` named `FeatureGates`. If using the [OpenTelemetry .NET](https://github.com/open-telemetry/opentelemetry-dotnet) SDK, you can do this by calling `AddSource("FeatureGates")` while building your `TracerProvider`. For example;
 
 ```C#
 using TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
