@@ -43,7 +43,7 @@ public abstract class AbstractFeatureGate
     {
         bool featureGateException = false;
         using Activity? activity = StartActivity(this.Key, featureGateState);
-        Stopwatch stopwatch = Stopwatch.StartNew();
+        ValueStopwatch stopwatch = ValueStopwatch.StartNew();
 
         try
         {
@@ -62,9 +62,8 @@ public abstract class AbstractFeatureGate
         }
         finally
         {
-            stopwatch.Stop();
             RecordActivityStatus(activity, featureGateException);
-            RecordMeasurement(this.InstrumentType, stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordMeasurement(this.InstrumentType, stopwatch.GetElapsedTime(), CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -72,7 +71,7 @@ public abstract class AbstractFeatureGate
     {
         bool featureGateException = false;
         using Activity? activity = StartActivity(this.Key, featureGateState);
-        Stopwatch stopwatch = Stopwatch.StartNew();
+        ValueStopwatch stopwatch = ValueStopwatch.StartNew();
 
         try
         {
@@ -86,9 +85,8 @@ public abstract class AbstractFeatureGate
         }
         finally
         {
-            stopwatch.Stop();
             RecordActivityStatus(activity, featureGateException);
-            RecordMeasurement(this.InstrumentType, stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordMeasurement(this.InstrumentType, stopwatch.GetElapsedTime(), CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -96,7 +94,7 @@ public abstract class AbstractFeatureGate
     {
         bool featureGateException = false;
         using Activity? activity = StartActivity(this.Key, featureGateState);
-        Stopwatch stopwatch = Stopwatch.StartNew();
+        ValueStopwatch stopwatch = ValueStopwatch.StartNew();
 
         try
         {
@@ -115,9 +113,8 @@ public abstract class AbstractFeatureGate
         }
         finally
         {
-            stopwatch.Stop();
             RecordActivityStatus(activity, featureGateException);
-            RecordMeasurement(this.InstrumentType, stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordMeasurement(this.InstrumentType, stopwatch.GetElapsedTime(), CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
@@ -125,7 +122,7 @@ public abstract class AbstractFeatureGate
     {
         bool featureGateException = false;
         using Activity? activity = StartActivity(this.Key, featureGateState);
-        Stopwatch stopwatch = Stopwatch.StartNew();
+        ValueStopwatch stopwatch = ValueStopwatch.StartNew();
 
         try
         {
@@ -139,9 +136,8 @@ public abstract class AbstractFeatureGate
         }
         finally
         {
-            stopwatch.Stop();
             RecordActivityStatus(activity, featureGateException);
-            RecordMeasurement(this.InstrumentType, stopwatch.Elapsed, CreateTags(this.Key, featureGateState, featureGateException));
+            RecordMeasurement(this.InstrumentType, stopwatch.GetElapsedTime(), CreateTags(this.Key, featureGateState, featureGateException));
         }
     }
 
