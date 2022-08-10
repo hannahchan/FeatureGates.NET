@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
 using FeatureGates.Internal;
-using OpenTelemetry.Trace;
 
 public abstract class AbstractFeatureGate
 {
