@@ -121,16 +121,14 @@ public class FeatureGateUnitTests
         [InlineData(InstrumentType.Counter, false)]
         [InlineData(InstrumentType.Histogram, true)]
         [InlineData(InstrumentType.Histogram, false)]
-        public void When_FeatureGateInvokedWithNullAction_Expect_Null(InstrumentType instrumentType, bool isOpened)
+        public void When_FeatureGateInvokedWithNullAction_Expect_NoException(InstrumentType instrumentType, bool isOpened)
         {
             // Arrange
             using SpyActivityListener activityListener = new SpyActivityListener();
             using SpyMeterListener meterListener = new SpyMeterListener();
 
-            Exception result;
-
             // Act
-            result = Record.Exception(() => new FeatureGate(
+            Exception exception = Record.Exception(() => new FeatureGate(
                 featureGateKey: "myFeatureGateKey",
                 instrumentType: instrumentType,
                 controlledBy: () => isOpened,
@@ -139,7 +137,7 @@ public class FeatureGateUnitTests
                 .Invoke());
 
             // Assert
-            Assert.Null(result);
+            Assert.Null(exception);
 
             Assert.Collection(
                 activityListener.Activities,
@@ -216,10 +214,8 @@ public class FeatureGateUnitTests
             using SpyActivityListener activityListener = new SpyActivityListener();
             using SpyMeterListener meterListener = new SpyMeterListener();
 
-            Exception result;
-
             // Act
-            result = Record.Exception(() => new FeatureGate(
+            Exception exception = Record.Exception(() => new FeatureGate(
                 featureGateKey: "myFeatureGateKey",
                 instrumentType: instrumentType,
                 controlledBy: () => isOpened,
@@ -228,8 +224,8 @@ public class FeatureGateUnitTests
                 .Invoke());
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(expected, result.Message);
+            Assert.NotNull(exception);
+            Assert.Equal(expected, exception.Message);
 
             Assert.Collection(
                 activityListener.Activities,
@@ -294,6 +290,30 @@ public class FeatureGateUnitTests
                             Assert.Equal("true", tag.Value);
                         });
                 });
+        }
+
+        [Theory]
+        [InlineData(InstrumentType.None, true)]
+        [InlineData(InstrumentType.None, false)]
+        public void When_FeatureGateInvokedNoInstrument_Expect_NoMetrics(InstrumentType instrumentType, bool isOpened)
+        {
+            // Arrange
+            using SpyActivityListener activityListener = new SpyActivityListener();
+            using SpyMeterListener meterListener = new SpyMeterListener();
+
+            // Act
+            Exception exception = Record.Exception(() => new FeatureGate(
+                featureGateKey: "myFeatureGateKey",
+                instrumentType: instrumentType,
+                controlledBy: () => isOpened,
+                whenOpened: null,
+                whenClosed: null)
+                .Invoke());
+
+            // Assert
+            Assert.Null(exception);
+            Assert.NotEmpty(activityListener.Activities);
+            Assert.Empty(meterListener.Measurements);
         }
     }
 
