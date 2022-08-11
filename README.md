@@ -55,7 +55,7 @@ Feature gate executions are recorded every time a feature gate is invoked. A fea
 
 ### Construction
 
-The recommended way to create a feature gate is to call the static method `FeatureGate.WithKey("MyFeatureGateKey")` which will return a `FeatureGateBuilder`. The `FeatureGateBuilder` will allow you to chain methods to help you correctly create the type of feature gate you need.
+The easiest way to create a feature gate is to call the static method `FeatureGate.WithKey("MyFeatureGateKey")` which will return a `FeatureGateBuilder`. The `FeatureGateBuilder` will allow you to chain methods to help you correctly create the type of feature gate you need.
 
 Alternatively you can instantiate the type of feature gate you need by calling its constructor. There are only four types;
 
@@ -68,7 +68,7 @@ Once created feature gates are immutable. Calling methods that mutate a feature 
 
 ### Feature Gate Key
 
-The feature gate key is a unique string identifier that you define for each of your feature gates. Using the same name as the feature flag that controls your feature gate is recommended. If your feature flag controls more than one feature gate, adding a unique suffix to the feature gate key for each feature gate is recommended.
+The feature gate key is a unique string identifier that you define for each of your feature gates. Using the same name as the feature flag that controls your feature gate is recommended. If your feature flag controls more than one feature gate, adding an identifying suffix to the feature gate key for each feature gate is recommended.
 
 > **Warning** - Failure to give each of your feature gates in your application a unique feature gate key will result in inaccurate metrics being collected for those feature gates.
 
