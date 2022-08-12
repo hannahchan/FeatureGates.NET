@@ -295,7 +295,7 @@ public class FeatureGateUnitTests
         [Theory]
         [InlineData(InstrumentType.None, true)]
         [InlineData(InstrumentType.None, false)]
-        public void When_FeatureGateInvokedNoInstrument_Expect_NoMetrics(InstrumentType instrumentType, bool isOpened)
+        public void When_FeatureGateInvokedWithNoInstrument_Expect_NoMetrics(InstrumentType instrumentType, bool isOpened)
         {
             // Arrange
             using SpyActivityListener activityListener = new SpyActivityListener();

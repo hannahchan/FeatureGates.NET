@@ -101,96 +101,6 @@ public class FeatureGateAsyncTResultUnitTests
         }
 
         [Theory]
-        [InlineData(InstrumentType.Counter, true)]
-        [InlineData(InstrumentType.Counter, false)]
-        [InlineData(InstrumentType.Histogram, true)]
-        [InlineData(InstrumentType.Histogram, false)]
-        public async Task When_FeatureGateInvokedWithNullFunction_Expect_NoException(InstrumentType instrumentType, bool isOpened)
-        {
-            // Arrange
-            using SpyActivityListener activityListener = new SpyActivityListener();
-            using SpyMeterListener meterListener = new SpyMeterListener();
-
-            string result = string.Empty;
-
-            // Act
-            Exception exception = await Record.ExceptionAsync(async () => result = await new FeatureGateAsync<string>(
-                featureGateKey: "myFeatureGateKey",
-                instrumentType: instrumentType,
-                controlledBy: async () => await Task.FromResult(isOpened),
-                whenOpened: null,
-                whenClosed: null)
-                .Invoke());
-
-            // Assert
-            Assert.Null(result);
-            Assert.Null(exception);
-
-            Assert.Collection(
-                activityListener.Activities,
-                activity =>
-                {
-                    Assert.Equal("feature.gate.execution", activity.OperationName);
-
-                    Assert.Collection(
-                        activity.Tags,
-                        tag =>
-                        {
-                            Assert.Equal("feature.gate.key", tag.Key);
-                            Assert.Equal("myFeatureGateKey", tag.Value);
-                        },
-                        tag =>
-                        {
-                            Assert.Equal("feature.gate.state", tag.Key);
-                            Assert.Equal(isOpened ? "opened" : "closed", tag.Value);
-                        });
-
-                    Assert.Equal(ActivityStatusCode.Ok, activity.Status);
-                    Assert.Null(activity.StatusDescription);
-                });
-
-            Assert.Collection(
-                meterListener.Measurements,
-                measurement =>
-                {
-                    switch (instrumentType)
-                    {
-                        case InstrumentType.Counter:
-                            Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
-                            Assert.Null(measurement.Instrument.Unit);
-                            Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
-                            break;
-
-                        case InstrumentType.Histogram:
-                            Assert.Equal("feature.gate.duration", measurement.Instrument.Name);
-                            Assert.Equal("ms", measurement.Instrument.Unit);
-                            Assert.Equal("measures the duration of feature gate executions", measurement.Instrument.Description);
-                            Assert.IsType<double>(measurement.Value);
-                            break;
-                    }
-
-                    Assert.Collection(
-                        measurement.Tags,
-                        tag =>
-                        {
-                            Assert.Equal("feature.gate.key", tag.Key);
-                            Assert.Equal("myFeatureGateKey", tag.Value);
-                        },
-                        tag =>
-                        {
-                            Assert.Equal("feature.gate.state", tag.Key);
-                            Assert.Equal(isOpened ? "opened" : "closed", tag.Value);
-                        },
-                        tag =>
-                        {
-                            Assert.Equal("feature.gate.exception", tag.Key);
-                            Assert.Equal("false", tag.Value);
-                        });
-                });
-        }
-
-        [Theory]
         [InlineData(InstrumentType.Counter, true, "Opened gate threw an exception.")]
         [InlineData(InstrumentType.Counter, false, "Closed gate threw an exception.")]
         [InlineData(InstrumentType.Histogram, true, "Opened gate threw an exception.")]
@@ -282,7 +192,7 @@ public class FeatureGateAsyncTResultUnitTests
         [Theory]
         [InlineData(InstrumentType.None, true)]
         [InlineData(InstrumentType.None, false)]
-        public async Task When_FeatureGateInvokedNoInstrument_Expect_NoMetrics(InstrumentType instrumentType, bool isOpened)
+        public async Task When_FeatureGateInvokedWithNoInstrument_Expect_NoMetrics(InstrumentType instrumentType, bool isOpened)
         {
             // Arrange
             using SpyActivityListener activityListener = new SpyActivityListener();
@@ -295,12 +205,12 @@ public class FeatureGateAsyncTResultUnitTests
                 featureGateKey: "myFeatureGateKey",
                 instrumentType: instrumentType,
                 controlledBy: async () => await Task.FromResult(isOpened),
-                whenOpened: null,
-                whenClosed: null)
+                whenOpened: () => Task.Run(() => "Feature gate was opened!"),
+                whenClosed: () => Task.Run(() => "Feature gate was closed."))
                 .Invoke());
 
             // Assert
-            Assert.Null(result);
+            Assert.NotEmpty(result);
             Assert.Null(exception);
             Assert.NotEmpty(activityListener.Activities);
             Assert.Empty(meterListener.Measurements);
@@ -358,31 +268,6 @@ public class FeatureGateAsyncTResultUnitTests
             Assert.Equal("Updated Action.", whenOpened);
             Assert.Equal("Feature gate was closed.", whenClosed);
         }
-
-        [Fact]
-        public async Task When_FeatureGateInvokedWithWhenOpenNullFunc_Expect_NewFeatureGateWithNewFunc()
-        {
-            // Arrange
-            bool isOpened = true;
-
-            FeatureGateAsync<string> featureGate = new FeatureGateAsync<string>(
-                featureGateKey: "myFeatureGateKey",
-                controlledBy: () => Task.FromResult(isOpened),
-                whenOpened: () => Task.Run(() => "Feature gate was opened!"),
-                whenClosed: () => Task.Run(() => "Feature gate was closed."));
-
-            // Act
-            FeatureGateAsync<string> newFeatureGate = featureGate.WhenOpened(null as Func<string>);
-            string whenOpened = await newFeatureGate.Invoke();
-
-            isOpened = false;
-            string whenClosed = await newFeatureGate.Invoke();
-
-            // Assert
-            Assert.NotEqual(featureGate, newFeatureGate);
-            Assert.Null(whenOpened);
-            Assert.Equal("Feature gate was closed.", whenClosed);
-        }
     }
 
     [Collection(TestCollection.FeatureGateInvocations)]
@@ -435,31 +320,6 @@ public class FeatureGateAsyncTResultUnitTests
             Assert.NotEqual(featureGate, newFeatureGate);
             Assert.Equal("Feature gate was opened!", whenOpened);
             Assert.Equal("Updated Action.", whenClosed);
-        }
-
-        [Fact]
-        public async Task When_FeatureGateInvokedWithWhenClosedNullFunc_Expect_NewFeatureGateWithNewFunc()
-        {
-            // Arrange
-            bool isOpened = true;
-
-            FeatureGateAsync<string> featureGate = new FeatureGateAsync<string>(
-                featureGateKey: "myFeatureGateKey",
-                controlledBy: () => Task.FromResult(isOpened),
-                whenOpened: () => Task.Run(() => "Feature gate was opened!"),
-                whenClosed: () => Task.Run(() => "Feature gate was closed."));
-
-            // Act
-            FeatureGateAsync<string> newFeatureGate = featureGate.WhenClosed(null as Func<string>);
-            string whenOpened = await newFeatureGate.Invoke();
-
-            isOpened = false;
-            string whenClosed = await newFeatureGate.Invoke();
-
-            // Assert
-            Assert.NotEqual(featureGate, newFeatureGate);
-            Assert.Equal("Feature gate was opened!", whenOpened);
-            Assert.Null(whenClosed);
         }
     }
 }

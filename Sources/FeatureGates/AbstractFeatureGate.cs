@@ -66,7 +66,7 @@ public abstract class AbstractFeatureGate
         }
     }
 
-    protected TResult? Invoke<TResult>(FeatureGateState featureGateState, Func<TResult>? function)
+    protected TResult Invoke<TResult>(FeatureGateState featureGateState, Func<TResult> function)
     {
         bool featureGateException = false;
         using Activity? activity = StartActivity(this.Key, featureGateState);
@@ -74,7 +74,7 @@ public abstract class AbstractFeatureGate
 
         try
         {
-            return function == null ? default : function();
+            return function();
         }
         catch (Exception exception)
         {
@@ -117,7 +117,7 @@ public abstract class AbstractFeatureGate
         }
     }
 
-    protected async Task<TResult?> Invoke<TResult>(FeatureGateState featureGateState, Func<Task<TResult>>? function)
+    protected async Task<TResult> Invoke<TResult>(FeatureGateState featureGateState, Func<Task<TResult>> function)
     {
         bool featureGateException = false;
         using Activity? activity = StartActivity(this.Key, featureGateState);
@@ -125,7 +125,7 @@ public abstract class AbstractFeatureGate
 
         try
         {
-            return function == null ? default : await function();
+            return await function();
         }
         catch (Exception exception)
         {

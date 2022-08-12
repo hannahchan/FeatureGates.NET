@@ -50,9 +50,9 @@ public class FeatureGateBuilder
             return new FeatureGate(this.Key, this.InstrumentType, this.ControlledBy, action, null);
         }
 
-        public FeatureGate<TResult> WhenOpened<TResult>(Func<TResult> function)
+        public PartialFeatureGate<TResult> WhenOpened<TResult>(Func<TResult> function)
         {
-            return new FeatureGate<TResult>(this.Key, this.InstrumentType, this.ControlledBy, function, null);
+            return new PartialFeatureGate<TResult>(this.Key, this.InstrumentType, this.ControlledBy, function);
         }
 
         public FeatureGateAsync WhenOpened(Func<Task> function)
@@ -60,9 +60,9 @@ public class FeatureGateBuilder
             return new FeatureGateAsync(this.Key, this.InstrumentType, () => Task.Run(this.ControlledBy), function, null);
         }
 
-        public FeatureGateAsync<TResult> WhenOpened<TResult>(Func<Task<TResult>> function)
+        public PartialFeatureGateAsync<TResult> WhenOpened<TResult>(Func<Task<TResult>> function)
         {
-            return new FeatureGateAsync<TResult>(this.Key, this.InstrumentType, () => Task.Run(this.ControlledBy), function, null);
+            return new PartialFeatureGateAsync<TResult>(this.Key, this.InstrumentType, () => Task.Run(this.ControlledBy), function);
         }
     }
 
@@ -86,9 +86,9 @@ public class FeatureGateBuilder
             return new FeatureGateAsync(this.Key, this.InstrumentType, this.ControlledBy, function, null);
         }
 
-        public FeatureGateAsync<TResult> WhenOpened<TResult>(Func<Task<TResult>> function)
+        public PartialFeatureGateAsync<TResult> WhenOpened<TResult>(Func<Task<TResult>> function)
         {
-            return new FeatureGateAsync<TResult>(this.Key, this.InstrumentType, this.ControlledBy, function, null);
+            return new PartialFeatureGateAsync<TResult>(this.Key, this.InstrumentType, this.ControlledBy, function);
         }
 
         public FeatureGateAsync WhenOpened(Action action)
@@ -96,9 +96,87 @@ public class FeatureGateBuilder
             return this.WhenOpened(() => Task.Run(action));
         }
 
-        public FeatureGateAsync<TResult> WhenOpened<TResult>(Func<TResult> function)
+        public PartialFeatureGateAsync<TResult> WhenOpened<TResult>(Func<TResult> function)
         {
             return this.WhenOpened(() => Task.Run(function));
+        }
+    }
+
+    public class PartialFeatureGate<TResult>
+    {
+        public PartialFeatureGate(string key, InstrumentType instrumentType, Func<bool> controlledBy, Func<TResult> whenOpened)
+        {
+            this.Key = key;
+            this.InstrumentType = instrumentType;
+            this.ControlledBy = controlledBy;
+            this.WhenOpened = whenOpened;
+        }
+
+        public string Key { get; }
+
+        public InstrumentType InstrumentType { get; }
+
+        public Func<bool> ControlledBy { get; }
+
+        public Func<TResult> WhenOpened { get; }
+
+        public FeatureGate<TResult> WhenClosed(Func<TResult> function)
+        {
+            return new FeatureGate<TResult>(
+                featureGateKey: this.Key,
+                instrumentType: this.InstrumentType,
+                controlledBy: this.ControlledBy,
+                whenOpened: this.WhenOpened,
+                whenClosed: function);
+        }
+
+        public FeatureGateAsync<TResult> WhenClosed(Func<Task<TResult>> function)
+        {
+            return new FeatureGateAsync<TResult>(
+                featureGateKey: this.Key,
+                instrumentType: this.InstrumentType,
+                controlledBy: () => Task.Run(this.ControlledBy),
+                whenOpened: () => Task.Run(this.WhenOpened),
+                whenClosed: function);
+        }
+    }
+
+    public class PartialFeatureGateAsync<TResult>
+    {
+        public PartialFeatureGateAsync(string key, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened)
+        {
+            this.Key = key;
+            this.InstrumentType = instrumentType;
+            this.ControlledBy = controlledBy;
+            this.WhenOpened = whenOpened;
+        }
+
+        public string Key { get; }
+
+        public InstrumentType InstrumentType { get; }
+
+        public Func<Task<bool>> ControlledBy { get; }
+
+        public Func<Task<TResult>> WhenOpened { get; }
+
+        public FeatureGateAsync<TResult> WhenClosed(Func<Task<TResult>> function)
+        {
+            return new FeatureGateAsync<TResult>(
+                featureGateKey: this.Key,
+                instrumentType: this.InstrumentType,
+                controlledBy: this.ControlledBy,
+                whenOpened: this.WhenOpened,
+                whenClosed: function);
+        }
+
+        public FeatureGateAsync<TResult> WhenClosed(Func<TResult> function)
+        {
+            return new FeatureGateAsync<TResult>(
+                featureGateKey: this.Key,
+                instrumentType: this.InstrumentType,
+                controlledBy: this.ControlledBy,
+                whenOpened: this.WhenOpened,
+                whenClosed: () => Task.Run(function));
         }
     }
 }

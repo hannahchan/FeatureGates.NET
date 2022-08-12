@@ -9,7 +9,7 @@ public class FeatureGateBuilderUnitTests
     public class BooleanFunction
     {
         [Fact]
-        public void When_BuildingFeatureGateWithAction_Expect_FeatureGate()
+        public void When_BuildingFeatureGateWithActions_Expect_FeatureGate()
         {
             // Arrange
             string featureGateKey = Guid.NewGuid().ToString();
@@ -27,24 +27,43 @@ public class FeatureGateBuilderUnitTests
         }
 
         [Fact]
-        public void When_BuildingFeatureGateWithFunction_Expect_FeatureGateWithReturnValue()
+        public void When_BuildingFeatureGateWithWhenOpenedActionAsync_Expect_FeatureGateAsync()
         {
             // Arrange
             string featureGateKey = Guid.NewGuid().ToString();
 
             // Act
-            FeatureGate<string> featureGate = new FeatureGateBuilder(featureGateKey)
+            FeatureGateAsync featureGate = new FeatureGateBuilder(featureGateKey)
+                .WithHistogram()
                 .ControlledBy(Test.BooleanFunction)
-                .WhenOpened(Test.Function<string>)
-                .WhenClosed(Test.Function<string>);
+                .WhenOpened(Test.ActionAsync)
+                .WhenClosed(Test.Action);
 
             // Assert
             Assert.Equal(featureGateKey, featureGate.Key);
-            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
+            Assert.Equal(InstrumentType.Histogram, featureGate.InstrumentType);
         }
 
         [Fact]
-        public void When_BuildingFeatureGateWithActionAsync_Expect_FeatureGateAsync()
+        public void When_BuildingFeatureGateWithWhenClosedActionAsync_Expect_FeatureGateAsync()
+        {
+            // Arrange
+            string featureGateKey = Guid.NewGuid().ToString();
+
+            // Act
+            FeatureGateAsync featureGate = new FeatureGateBuilder(featureGateKey)
+                .WithHistogram()
+                .ControlledBy(Test.BooleanFunction)
+                .WhenOpened(Test.Action)
+                .WhenClosed(Test.ActionAsync);
+
+            // Assert
+            Assert.Equal(featureGateKey, featureGate.Key);
+            Assert.Equal(InstrumentType.Histogram, featureGate.InstrumentType);
+        }
+
+        [Fact]
+        public void When_BuildingFeatureGateWithActionsAsync_Expect_FeatureGateAsync()
         {
             // Arrange
             string featureGateKey = Guid.NewGuid().ToString();
@@ -59,9 +78,64 @@ public class FeatureGateBuilderUnitTests
             Assert.Equal(featureGateKey, featureGate.Key);
             Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
         }
+    }
+
+    public class BooleanFunctionTResult
+    {
+        [Fact]
+        public void When_BuildingFeatureGateWithFunctions_Expect_FeatureGateWithReturnValue()
+        {
+            // Arrange
+            string featureGateKey = Guid.NewGuid().ToString();
+
+            // Act
+            FeatureGate<string> featureGate = new FeatureGateBuilder(featureGateKey)
+                .WithHistogram()
+                .ControlledBy(Test.BooleanFunction)
+                .WhenOpened(Test.Function<string>)
+                .WhenClosed(Test.Function<string>);
+
+            // Assert
+            Assert.Equal(featureGateKey, featureGate.Key);
+            Assert.Equal(InstrumentType.Histogram, featureGate.InstrumentType);
+        }
 
         [Fact]
-        public void When_BuildingFeatureGateWithFunctionAsync_Expect_FeatureGateAsyncWithReturnValue()
+        public void When_BuildingFeatureGateWithWhenOpenedFunctionAsync_Expect_FeatureGateAsyncWithReturnValue()
+        {
+            // Arrange
+            string featureGateKey = Guid.NewGuid().ToString();
+
+            // Act
+            FeatureGateAsync<string> featureGate = new FeatureGateBuilder(featureGateKey)
+                .ControlledBy(Test.BooleanFunction)
+                .WhenOpened(Test.FunctionAsync<string>)
+                .WhenClosed(Test.Function<string>);
+
+            // Assert
+            Assert.Equal(featureGateKey, featureGate.Key);
+            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
+        }
+
+        [Fact]
+        public void When_BuildingFeatureGateWithWhenClosedFunctionAsync_Expect_FeatureGateAsyncWithReturnValue()
+        {
+            // Arrange
+            string featureGateKey = Guid.NewGuid().ToString();
+
+            // Act
+            FeatureGateAsync<string> featureGate = new FeatureGateBuilder(featureGateKey)
+                .ControlledBy(Test.BooleanFunction)
+                .WhenOpened(Test.Function<string>)
+                .WhenClosed(Test.FunctionAsync<string>);
+
+            // Assert
+            Assert.Equal(featureGateKey, featureGate.Key);
+            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
+        }
+
+        [Fact]
+        public void When_BuildingFeatureGateWithFunctionsAsync_Expect_FeatureGateAsyncWithReturnValue()
         {
             // Arrange
             string featureGateKey = Guid.NewGuid().ToString();
@@ -81,7 +155,7 @@ public class FeatureGateBuilderUnitTests
     public class BooleanFunctionAsync
     {
         [Fact]
-        public void When_BuildingFeatureGateWithAction_Expect_FeatureGateAsync()
+        public void When_BuildingFeatureGateWithActions_Expect_FeatureGateAsync()
         {
             // Arrange
             string featureGateKey = Guid.NewGuid().ToString();
@@ -99,24 +173,43 @@ public class FeatureGateBuilderUnitTests
         }
 
         [Fact]
-        public void When_BuildingFeatureGateWithFunction_Expect_FeatureGateAsyncWithReturnValue()
+        public void When_BuildingFeatureGateWithWhenOpenedActionAsync_Expect_FeatureGateAsync()
         {
             // Arrange
             string featureGateKey = Guid.NewGuid().ToString();
 
             // Act
-            FeatureGateAsync<string> featureGate = new FeatureGateBuilder(featureGateKey)
+            FeatureGateAsync featureGate = new FeatureGateBuilder(featureGateKey)
+                .WithHistogram()
                 .ControlledBy(Test.BooleanFunctionAsync)
-                .WhenOpened(Test.Function<string>)
-                .WhenClosed(Test.Function<string>);
+                .WhenOpened(Test.ActionAsync)
+                .WhenClosed(Test.Action);
 
             // Assert
             Assert.Equal(featureGateKey, featureGate.Key);
-            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
+            Assert.Equal(InstrumentType.Histogram, featureGate.InstrumentType);
         }
 
         [Fact]
-        public void When_BuildingFeatureGateWithActionAsync_Expect_FeatureGateAsync()
+        public void When_BuildingFeatureGateWithWhenClosedActionAsync_Expect_FeatureGateAsync()
+        {
+            // Arrange
+            string featureGateKey = Guid.NewGuid().ToString();
+
+            // Act
+            FeatureGateAsync featureGate = new FeatureGateBuilder(featureGateKey)
+                .WithHistogram()
+                .ControlledBy(Test.BooleanFunctionAsync)
+                .WhenOpened(Test.Action)
+                .WhenClosed(Test.ActionAsync);
+
+            // Assert
+            Assert.Equal(featureGateKey, featureGate.Key);
+            Assert.Equal(InstrumentType.Histogram, featureGate.InstrumentType);
+        }
+
+        [Fact]
+        public void When_BuildingFeatureGateWithActionsAsync_Expect_FeatureGateAsync()
         {
             // Arrange
             string featureGateKey = Guid.NewGuid().ToString();
@@ -131,9 +224,64 @@ public class FeatureGateBuilderUnitTests
             Assert.Equal(featureGateKey, featureGate.Key);
             Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
         }
+    }
+
+    public class BooleanFunctionAsyncTResult
+    {
+        [Fact]
+        public void When_BuildingFeatureGateWithFunctions_Expect_FeatureGateAsyncWithReturnValue()
+        {
+            // Arrange
+            string featureGateKey = Guid.NewGuid().ToString();
+
+            // Act
+            FeatureGateAsync<string> featureGate = new FeatureGateBuilder(featureGateKey)
+                .WithHistogram()
+                .ControlledBy(Test.BooleanFunctionAsync)
+                .WhenOpened(Test.Function<string>)
+                .WhenClosed(Test.Function<string>);
+
+            // Assert
+            Assert.Equal(featureGateKey, featureGate.Key);
+            Assert.Equal(InstrumentType.Histogram, featureGate.InstrumentType);
+        }
 
         [Fact]
-        public void When_BuildingFeatureGateWithFunctionAsync_Expect_FeatureGateAsyncWithReturnValue()
+        public void When_BuildingFeatureGateWithWhenOpenedFunctionAsync_Expect_FeatureGateAsyncWithReturnValue()
+        {
+            // Arrange
+            string featureGateKey = Guid.NewGuid().ToString();
+
+            // Act
+            FeatureGateAsync<string> featureGate = new FeatureGateBuilder(featureGateKey)
+                .ControlledBy(Test.BooleanFunctionAsync)
+                .WhenOpened(Test.FunctionAsync<string>)
+                .WhenClosed(Test.Function<string>);
+
+            // Assert
+            Assert.Equal(featureGateKey, featureGate.Key);
+            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
+        }
+
+        [Fact]
+        public void When_BuildingFeatureGateWithWhenClosedFunctionAsync_Expect_FeatureGateAsyncWithReturnValue()
+        {
+            // Arrange
+            string featureGateKey = Guid.NewGuid().ToString();
+
+            // Act
+            FeatureGateAsync<string> featureGate = new FeatureGateBuilder(featureGateKey)
+                .ControlledBy(Test.BooleanFunctionAsync)
+                .WhenOpened(Test.Function<string>)
+                .WhenClosed(Test.FunctionAsync<string>);
+
+            // Assert
+            Assert.Equal(featureGateKey, featureGate.Key);
+            Assert.Equal(InstrumentType.Counter, featureGate.InstrumentType);
+        }
+
+        [Fact]
+        public void When_BuildingFeatureGateWithFunctionsAsync_Expect_FeatureGateAsyncWithReturnValue()
         {
             // Arrange
             string featureGateKey = Guid.NewGuid().ToString();

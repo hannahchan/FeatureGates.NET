@@ -7,11 +7,11 @@ public class FeatureGate<TResult> : AbstractFeatureGate
 {
     private readonly Func<bool> controlledBy;
 
-    private readonly Func<TResult>? whenOpened;
+    private readonly Func<TResult> whenOpened;
 
-    private readonly Func<TResult>? whenClosed;
+    private readonly Func<TResult> whenClosed;
 
-    public FeatureGate(string featureGateKey, Func<bool> controlledBy, Func<TResult>? whenOpened, Func<TResult>? whenClosed)
+    public FeatureGate(string featureGateKey, Func<bool> controlledBy, Func<TResult> whenOpened, Func<TResult> whenClosed)
         : base(featureGateKey, InstrumentType.Counter)
     {
         this.controlledBy = controlledBy;
@@ -19,7 +19,7 @@ public class FeatureGate<TResult> : AbstractFeatureGate
         this.whenClosed = whenClosed;
     }
 
-    public FeatureGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy, Func<TResult>? whenOpened, Func<TResult>? whenClosed)
+    public FeatureGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy, Func<TResult> whenOpened, Func<TResult> whenClosed)
         : base(featureGateKey, instrumentType)
     {
         this.controlledBy = controlledBy;
@@ -27,14 +27,14 @@ public class FeatureGate<TResult> : AbstractFeatureGate
         this.whenClosed = whenClosed;
     }
 
-    public TResult? Invoke()
+    public TResult Invoke()
     {
         return this.controlledBy()
             ? this.Invoke(FeatureGateState.Opened, this.whenOpened)
             : this.Invoke(FeatureGateState.Closed, this.whenClosed);
     }
 
-    public FeatureGate<TResult> WhenOpened(Func<TResult>? function)
+    public FeatureGate<TResult> WhenOpened(Func<TResult> function)
     {
         return new FeatureGate<TResult>(
             featureGateKey: this.Key,
@@ -44,17 +44,17 @@ public class FeatureGate<TResult> : AbstractFeatureGate
             whenClosed: this.whenClosed);
     }
 
-    public FeatureGateAsync<TResult> WhenOpened(Func<Task<TResult>>? function)
+    public FeatureGateAsync<TResult> WhenOpened(Func<Task<TResult>> function)
     {
         return new FeatureGateAsync<TResult>(
             featureGateKey: this.Key,
             instrumentType: this.InstrumentType,
             controlledBy: () => Task.Run(this.controlledBy),
             whenOpened: function,
-            whenClosed: this.whenClosed == null ? null : () => Task.Run(this.whenClosed));
+            whenClosed: () => Task.Run(this.whenClosed));
     }
 
-    public FeatureGate<TResult> WhenClosed(Func<TResult>? function)
+    public FeatureGate<TResult> WhenClosed(Func<TResult> function)
     {
         return new FeatureGate<TResult>(
             featureGateKey: this.Key,
@@ -64,13 +64,13 @@ public class FeatureGate<TResult> : AbstractFeatureGate
             whenClosed: function);
     }
 
-    public FeatureGateAsync<TResult> WhenClosed(Func<Task<TResult>>? function)
+    public FeatureGateAsync<TResult> WhenClosed(Func<Task<TResult>> function)
     {
         return new FeatureGateAsync<TResult>(
             featureGateKey: this.Key,
             instrumentType: this.InstrumentType,
             controlledBy: () => Task.Run(this.controlledBy),
-            whenOpened: this.whenOpened == null ? null : () => Task.Run(this.whenOpened),
+            whenOpened: () => Task.Run(this.whenOpened),
             whenClosed: function);
     }
 }

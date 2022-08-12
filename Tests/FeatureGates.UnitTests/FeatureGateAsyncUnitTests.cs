@@ -279,7 +279,7 @@ public class FeatureGateAsyncUnitTests
         [Theory]
         [InlineData(InstrumentType.None, true)]
         [InlineData(InstrumentType.None, false)]
-        public async Task When_FeatureGateInvokedNoInstrument_Expect_NoMetrics(InstrumentType instrumentType, bool isOpened)
+        public async Task When_FeatureGateInvokedWithNoInstrument_Expect_NoMetrics(InstrumentType instrumentType, bool isOpened)
         {
             // Arrange
             using SpyActivityListener activityListener = new SpyActivityListener();
