@@ -25,22 +25,22 @@ public static class StaticFeatureGate
             : Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
-    public static async Task Invoke(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task>? whenOpened, Func<Task>? whenClosed)
+    public static async Task InvokeAsync(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task>? whenOpened, Func<Task>? whenClosed)
     {
         if (await controlledBy())
         {
-            await Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Opened, whenOpened, instrumentType);
+            await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Opened, whenOpened, instrumentType);
         }
         else
         {
-            await Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
+            await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
         }
     }
 
-    public static async Task<TResult> Invoke<TResult>(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened, Func<Task<TResult>> whenClosed)
+    public static async Task<TResult> InvokeAsync<TResult>(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened, Func<Task<TResult>> whenClosed)
     {
         return await controlledBy()
-            ? await Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Opened, whenOpened, instrumentType)
-            : await Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
+            ? await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Opened, whenOpened, instrumentType)
+            : await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 }

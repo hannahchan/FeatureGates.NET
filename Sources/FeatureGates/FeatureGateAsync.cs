@@ -29,7 +29,7 @@ public class FeatureGateAsync : AbstractFeatureGate
 
     public async Task Invoke()
     {
-        await StaticFeatureGate.Invoke(this.Key, this.InstrumentType, this.controlledBy, this.whenOpened, this.whenClosed);
+        await StaticFeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.controlledBy, this.whenOpened, this.whenClosed);
     }
 
     public FeatureGateAsync WhenOpened(Func<Task>? function)

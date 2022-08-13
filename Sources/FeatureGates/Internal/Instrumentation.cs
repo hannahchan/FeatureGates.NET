@@ -68,7 +68,7 @@ internal static class Instrumentation
         }
     }
 
-    public static async Task RecordExecution(string featureGateKey, FeatureGateState featureGateState, Func<Task>? function, InstrumentType instrumentType)
+    public static async Task RecordExecutionAsync(string featureGateKey, FeatureGateState featureGateState, Func<Task>? function, InstrumentType instrumentType)
     {
         bool featureGateException = false;
         using Activity? activity = StartActivity(featureGateKey, featureGateState);
@@ -96,7 +96,7 @@ internal static class Instrumentation
         }
     }
 
-    public static async Task<TResult> RecordExecution<TResult>(string featureGateKey, FeatureGateState featureGateState, Func<Task<TResult>> function, InstrumentType instrumentType)
+    public static async Task<TResult> RecordExecutionAsync<TResult>(string featureGateKey, FeatureGateState featureGateState, Func<Task<TResult>> function, InstrumentType instrumentType)
     {
         bool featureGateException = false;
         using Activity? activity = StartActivity(featureGateKey, featureGateState);
