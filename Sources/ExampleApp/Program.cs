@@ -56,8 +56,8 @@ internal static class Program
             Thread.Sleep(200);
 
             // Do not await.
-            featureGate1.Invoke();
-            featureGate2.Invoke();
+            featureGate1.InvokeAsync();
+            featureGate2.InvokeAsync();
         }
     }
 

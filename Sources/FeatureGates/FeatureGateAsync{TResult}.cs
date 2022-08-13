@@ -27,7 +27,7 @@ public class FeatureGateAsync<TResult> : AbstractFeatureGate
         this.whenClosed = whenClosed;
     }
 
-    public async Task<TResult> Invoke()
+    public async Task<TResult> InvokeAsync()
     {
         return await StaticFeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.controlledBy, this.whenOpened, this.whenClosed);
     }
