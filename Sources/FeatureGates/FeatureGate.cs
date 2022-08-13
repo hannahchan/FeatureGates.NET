@@ -34,14 +34,7 @@ public class FeatureGate : AbstractFeatureGate
 
     public void Invoke()
     {
-        if (this.controlledBy())
-        {
-            this.Invoke(FeatureGateState.Opened, this.whenOpened);
-        }
-        else
-        {
-            this.Invoke(FeatureGateState.Closed, this.whenClosed);
-        }
+        StaticFeatureGate.Invoke(this.Key, this.InstrumentType, this.controlledBy, this.whenOpened, this.whenClosed);
     }
 
     public FeatureGate WhenOpened(Action? action)

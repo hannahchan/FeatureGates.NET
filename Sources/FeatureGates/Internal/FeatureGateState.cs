@@ -1,7 +1,7 @@
-namespace FeatureGates;
+namespace FeatureGates.Internal;
 
 /// <summary>The state of the feature gate.</summary>
-public enum FeatureGateState
+internal enum FeatureGateState
 {
     /// <summary>Represents a closed feature gate.</summary>
     Closed,

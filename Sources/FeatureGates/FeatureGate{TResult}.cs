@@ -29,9 +29,7 @@ public class FeatureGate<TResult> : AbstractFeatureGate
 
     public TResult Invoke()
     {
-        return this.controlledBy()
-            ? this.Invoke(FeatureGateState.Opened, this.whenOpened)
-            : this.Invoke(FeatureGateState.Closed, this.whenClosed);
+        return StaticFeatureGate.Invoke(this.Key, this.InstrumentType, this.controlledBy, this.whenOpened, this.whenClosed);
     }
 
     public FeatureGate<TResult> WhenOpened(Func<TResult> function)
