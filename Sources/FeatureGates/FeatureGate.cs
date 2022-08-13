@@ -1,31 +1,30 @@
 namespace FeatureGates;
 
 using System;
-using System.Threading.Tasks;
 
 public class FeatureGate : AbstractFeatureGate
 {
-    private readonly Func<bool> controlledBy;
-
-    private readonly Action? whenOpened;
-
-    private readonly Action? whenClosed;
-
     public FeatureGate(string featureGateKey, Func<bool> controlledBy, Action? whenOpened, Action? whenClosed)
         : base(featureGateKey, InstrumentType.Counter)
     {
-        this.controlledBy = controlledBy;
-        this.whenOpened = whenOpened;
-        this.whenClosed = whenClosed;
+        this.ControlledBy = controlledBy;
+        this.WhenOpened = whenOpened;
+        this.WhenClosed = whenClosed;
     }
 
     public FeatureGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy, Action? whenOpened, Action? whenClosed)
         : base(featureGateKey, instrumentType)
     {
-        this.controlledBy = controlledBy;
-        this.whenOpened = whenOpened;
-        this.whenClosed = whenClosed;
+        this.ControlledBy = controlledBy;
+        this.WhenOpened = whenOpened;
+        this.WhenClosed = whenClosed;
     }
+
+    public Func<bool> ControlledBy { get; }
+
+    public Action? WhenOpened { get; }
+
+    public Action? WhenClosed { get; }
 
     public static FeatureGateBuilder WithKey(string featureGateKey)
     {
@@ -34,46 +33,6 @@ public class FeatureGate : AbstractFeatureGate
 
     public void Invoke()
     {
-        StaticFeatureGate.Invoke(this.Key, this.InstrumentType, this.controlledBy, this.whenOpened, this.whenClosed);
-    }
-
-    public FeatureGate WhenOpened(Action? action)
-    {
-        return new FeatureGate(
-            featureGateKey: this.Key,
-            instrumentType: this.InstrumentType,
-            controlledBy: this.controlledBy,
-            whenOpened: action,
-            whenClosed: this.whenClosed);
-    }
-
-    public FeatureGateAsync WhenOpened(Func<Task>? function)
-    {
-        return new FeatureGateAsync(
-            featureGateKey: this.Key,
-            instrumentType: this.InstrumentType,
-            controlledBy: () => Task.Run(this.controlledBy),
-            whenOpened: function,
-            whenClosed: this.whenClosed == null ? null : () => Task.Run(this.whenClosed));
-    }
-
-    public FeatureGate WhenClosed(Action? action)
-    {
-        return new FeatureGate(
-            featureGateKey: this.Key,
-            instrumentType: this.InstrumentType,
-            controlledBy: this.controlledBy,
-            whenOpened: this.whenOpened,
-            whenClosed: action);
-    }
-
-    public FeatureGateAsync WhenClosed(Func<Task>? function)
-    {
-        return new FeatureGateAsync(
-            featureGateKey: this.Key,
-            instrumentType: this.InstrumentType,
-            controlledBy: () => Task.Run(this.controlledBy),
-            whenOpened: this.whenOpened == null ? null : () => Task.Run(this.whenOpened),
-            whenClosed: function);
+        StaticFeatureGate.Invoke(this.Key, this.InstrumentType, this.ControlledBy, this.WhenOpened, this.WhenClosed);
     }
 }

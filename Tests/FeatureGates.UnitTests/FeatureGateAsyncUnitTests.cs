@@ -1,182 +1,57 @@
 namespace FeatureGates.UnitTests;
 
-using System;
 using System.Threading.Tasks;
+using FeatureGates.UnitTests.Helpers;
 using Xunit;
 
+[Collection(TestCollection.FeatureGateInvocations)]
 public class FeatureGateAsyncUnitTests
 {
-    [Collection(TestCollection.FeatureGateInvocations)]
-    public class WhenOpened
+    [Theory]
+    [InlineData(true, "Feature gated opened!")]
+    [InlineData(false, "Feature gated closed.")]
+    public async Task When_UsingSimpleConstructorThenInvoked_Expect_Invoked(bool isOpened, string expected)
     {
-        [Fact]
-        public async Task When_FeatureGateInvokedWithWhenOpenFuncTask_Expect_NewFeatureGateWithNewFuncTask()
-        {
-            // Arrange
-            bool isOpened = true;
+        // Arrange
+        using SpyActivityListener activityListener = new SpyActivityListener();
+        using SpyMeterListener meterListener = new SpyMeterListener();
 
-            string whenOpened = string.Empty;
-            string whenClosed = string.Empty;
+        string result = string.Empty;
 
-            FeatureGateAsync featureGate = new FeatureGateAsync(
-                featureGateKey: "myFeatureGateKey",
-                controlledBy: () => Task.FromResult(isOpened),
-                whenOpened: () => Task.Run(() => whenOpened = "Feature gate was opened!"),
-                whenClosed: () => Task.Run(() => whenClosed = "Feature gate was closed."));
+        Task<bool> ControlledBy() => Task.FromResult(isOpened);
+        Task WhenOpened() => Task.Run(() => result = "Feature gated opened!");
+        Task WhenClosed() => Task.Run(() => result = "Feature gated closed.");
 
-            // Act
-            FeatureGateAsync newFeatureGate = featureGate.WhenOpened(() => Task.Run(() => whenOpened = "Updated Function."));
-            await newFeatureGate.InvokeAsync();
+        // Act
+        await new FeatureGateAsync("myFeatureGateKey", ControlledBy, WhenOpened, WhenClosed).InvokeAsync();
 
-            isOpened = false;
-            await newFeatureGate.InvokeAsync();
-
-            // Assert
-            Assert.Equal("Updated Function.", whenOpened);
-            Assert.Equal("Feature gate was closed.", whenClosed);
-        }
-
-        [Fact]
-        public async Task When_FeatureGateInvokedWithWhenOpenAction_Expect_NewFeatureGateWithNewAction()
-        {
-            // Arrange
-            bool isOpened = true;
-
-            string whenOpened = string.Empty;
-            string whenClosed = string.Empty;
-
-            FeatureGateAsync featureGate = new FeatureGateAsync(
-                featureGateKey: "myFeatureGateKey",
-                controlledBy: () => Task.FromResult(isOpened),
-                whenOpened: () => Task.Run(() => whenOpened = "Feature gate was opened!"),
-                whenClosed: () => Task.Run(() => whenClosed = "Feature gate was closed."));
-
-            // Act
-            FeatureGateAsync newFeatureGate = featureGate.WhenOpened(() => whenOpened = "Updated Action.");
-            await newFeatureGate.InvokeAsync();
-
-            isOpened = false;
-            await newFeatureGate.InvokeAsync();
-
-            // Assert
-            Assert.NotEqual(featureGate, newFeatureGate);
-            Assert.Equal("Updated Action.", whenOpened);
-            Assert.Equal("Feature gate was closed.", whenClosed);
-        }
-
-        [Fact]
-        public async Task When_FeatureGateInvokedWithWhenOpenNullAction_Expect_NewFeatureGateWithNewAction()
-        {
-            // Arrange
-            bool isOpened = true;
-
-            string whenOpened = string.Empty;
-            string whenClosed = string.Empty;
-
-            FeatureGateAsync featureGate = new FeatureGateAsync(
-                featureGateKey: "myFeatureGateKey",
-                controlledBy: () => Task.FromResult(isOpened),
-                whenOpened: () => Task.Run(() => whenOpened = "Feature gate was opened!"),
-                whenClosed: () => Task.Run(() => whenClosed = "Feature gate was closed."));
-
-            // Act
-            FeatureGateAsync newFeatureGate = featureGate.WhenOpened(null as Action);
-            await newFeatureGate.InvokeAsync();
-
-            isOpened = false;
-            await newFeatureGate.InvokeAsync();
-
-            // Assert
-            Assert.NotEqual(featureGate, newFeatureGate);
-            Assert.Equal(string.Empty, whenOpened);
-            Assert.Equal("Feature gate was closed.", whenClosed);
-        }
+        // Assert
+        Assert.Equal(expected, result);
+        Assert.Single(activityListener.Activities);
+        Assert.Single(meterListener.Measurements);
     }
 
-    [Collection(TestCollection.FeatureGateInvocations)]
-    public class WhenClosed
+    [Theory]
+    [InlineData(true, "Feature gated opened!")]
+    [InlineData(false, "Feature gated closed.")]
+    public async Task When_UsingFullConstructorThenInvoked_Expect_Invoked(bool isOpened, string expected)
     {
-        [Fact]
-        public async Task When_FeatureGateInvokedWithWhenClosedFuncTask_Expect_NewFeatureGateWithNewFuncTask()
-        {
-            // Arrange
-            bool isOpened = true;
+        // Arrange
+        using SpyActivityListener activityListener = new SpyActivityListener();
+        using SpyMeterListener meterListener = new SpyMeterListener();
 
-            string whenOpened = string.Empty;
-            string whenClosed = string.Empty;
+        string result = string.Empty;
 
-            FeatureGateAsync featureGate = new FeatureGateAsync(
-                featureGateKey: "myFeatureGateKey",
-                controlledBy: () => Task.FromResult(isOpened),
-                whenOpened: () => Task.Run(() => whenOpened = "Feature gate was opened!"),
-                whenClosed: () => Task.Run(() => whenClosed = "Feature gate was closed."));
+        Task<bool> ControlledBy() => Task.FromResult(isOpened);
+        Task WhenOpened() => Task.Run(() => result = "Feature gated opened!");
+        Task WhenClosed() => Task.Run(() => result = "Feature gated closed.");
 
-            // Act
-            FeatureGateAsync newFeatureGate = featureGate.WhenClosed(() => Task.Run(() => whenClosed = "Updated Function."));
-            await newFeatureGate.InvokeAsync();
+        // Act
+        await new FeatureGateAsync("myFeatureGateKey", InstrumentType.None, ControlledBy, WhenOpened, WhenClosed).InvokeAsync();
 
-            isOpened = false;
-            await newFeatureGate.InvokeAsync();
-
-            // Assert
-            Assert.Equal("Feature gate was opened!", whenOpened);
-            Assert.Equal("Updated Function.", whenClosed);
-        }
-
-        [Fact]
-        public async Task When_FeatureGateInvokedWithWhenClosedAction_Expect_NewFeatureGateWithNewAction()
-        {
-            // Arrange
-            bool isOpened = true;
-
-            string whenOpened = string.Empty;
-            string whenClosed = string.Empty;
-
-            FeatureGateAsync featureGate = new FeatureGateAsync(
-                featureGateKey: "myFeatureGateKey",
-                controlledBy: () => Task.FromResult(isOpened),
-                whenOpened: () => Task.Run(() => whenOpened = "Feature gate was opened!"),
-                whenClosed: () => Task.Run(() => whenClosed = "Feature gate was closed."));
-
-            // Act
-            FeatureGateAsync newFeatureGate = featureGate.WhenClosed(() => whenClosed = "Updated Action.");
-            await newFeatureGate.InvokeAsync();
-
-            isOpened = false;
-            await newFeatureGate.InvokeAsync();
-
-            // Assert
-            Assert.NotEqual(featureGate, newFeatureGate);
-            Assert.Equal("Feature gate was opened!", whenOpened);
-            Assert.Equal("Updated Action.", whenClosed);
-        }
-
-        [Fact]
-        public async Task When_FeatureGateInvokedWithWhenClosedNullAction_Expect_NewFeatureGateWithNewAction()
-        {
-            // Arrange
-            bool isOpened = true;
-
-            string whenOpened = string.Empty;
-            string whenClosed = string.Empty;
-
-            FeatureGateAsync featureGate = new FeatureGateAsync(
-                featureGateKey: "myFeatureGateKey",
-                controlledBy: () => Task.FromResult(isOpened),
-                whenOpened: () => Task.Run(() => whenOpened = "Feature gate was opened!"),
-                whenClosed: () => Task.Run(() => whenClosed = "Feature gate was closed."));
-
-            // Act
-            FeatureGateAsync newFeatureGate = featureGate.WhenClosed(null as Action);
-            await newFeatureGate.InvokeAsync();
-
-            isOpened = false;
-            await newFeatureGate.InvokeAsync();
-
-            // Assert
-            Assert.NotEqual(featureGate, newFeatureGate);
-            Assert.Equal("Feature gate was opened!", whenOpened);
-            Assert.Equal(string.Empty, whenClosed);
-        }
+        // Assert
+        Assert.Equal(expected, result);
+        Assert.Single(activityListener.Activities);
+        Assert.Empty(meterListener.Measurements);
     }
 }

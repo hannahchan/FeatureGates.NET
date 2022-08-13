@@ -4,7 +4,8 @@ using System;
 using System.Threading.Tasks;
 using FeatureGates.Internal;
 
-public static class StaticFeatureGate
+// TODO: Make this public in future and roll these methods into FeatureGate.cs
+internal static class StaticFeatureGate
 {
     public static void Invoke(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy, Action? whenOpened, Action? whenClosed)
     {

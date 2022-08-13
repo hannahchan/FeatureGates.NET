@@ -5,70 +5,30 @@ using System.Threading.Tasks;
 
 public class FeatureGateAsync<TResult> : AbstractFeatureGate
 {
-    private readonly Func<Task<bool>> controlledBy;
-
-    private readonly Func<Task<TResult>> whenOpened;
-
-    private readonly Func<Task<TResult>> whenClosed;
-
     public FeatureGateAsync(string featureGateKey, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened, Func<Task<TResult>> whenClosed)
         : base(featureGateKey, InstrumentType.Counter)
     {
-        this.controlledBy = controlledBy;
-        this.whenOpened = whenOpened;
-        this.whenClosed = whenClosed;
+        this.ControlledBy = controlledBy;
+        this.WhenOpened = whenOpened;
+        this.WhenClosed = whenClosed;
     }
 
     public FeatureGateAsync(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened, Func<Task<TResult>> whenClosed)
         : base(featureGateKey, instrumentType)
     {
-        this.controlledBy = controlledBy;
-        this.whenOpened = whenOpened;
-        this.whenClosed = whenClosed;
+        this.ControlledBy = controlledBy;
+        this.WhenOpened = whenOpened;
+        this.WhenClosed = whenClosed;
     }
+
+    public Func<Task<bool>> ControlledBy { get; }
+
+    public Func<Task<TResult>> WhenOpened { get; }
+
+    public Func<Task<TResult>> WhenClosed { get; }
 
     public async Task<TResult> InvokeAsync()
     {
-        return await StaticFeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.controlledBy, this.whenOpened, this.whenClosed);
-    }
-
-    public FeatureGateAsync<TResult> WhenOpened(Func<Task<TResult>> function)
-    {
-        return new FeatureGateAsync<TResult>(
-            featureGateKey: this.Key,
-            instrumentType: this.InstrumentType,
-            controlledBy: this.controlledBy,
-            whenOpened: function,
-            whenClosed: this.whenClosed);
-    }
-
-    public FeatureGateAsync<TResult> WhenOpened(Func<TResult> function)
-    {
-        return new FeatureGateAsync<TResult>(
-            featureGateKey: this.Key,
-            instrumentType: this.InstrumentType,
-            controlledBy: this.controlledBy,
-            whenOpened: () => Task.Run(function),
-            whenClosed: this.whenClosed);
-    }
-
-    public FeatureGateAsync<TResult> WhenClosed(Func<Task<TResult>> function)
-    {
-        return new FeatureGateAsync<TResult>(
-            featureGateKey: this.Key,
-            instrumentType: this.InstrumentType,
-            controlledBy: this.controlledBy,
-            whenOpened: this.whenOpened,
-            whenClosed: function);
-    }
-
-    public FeatureGateAsync<TResult> WhenClosed(Func<TResult> function)
-    {
-        return new FeatureGateAsync<TResult>(
-            featureGateKey: this.Key,
-            instrumentType: this.InstrumentType,
-            controlledBy: this.controlledBy,
-            whenOpened: this.whenOpened,
-            whenClosed: () => Task.Run(function));
+        return await StaticFeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.ControlledBy, this.WhenOpened, this.WhenClosed);
     }
 }

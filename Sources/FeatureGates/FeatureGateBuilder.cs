@@ -20,34 +20,29 @@ public class FeatureGateBuilder
         return this;
     }
 
-    public PartialFeatureGate ControlledBy(Func<bool> predicate)
+    public BaseFeatureGate ControlledBy(Func<bool> predicate)
     {
-        return new PartialFeatureGate(this.Key, this.InstrumentType, predicate);
+        return new BaseFeatureGate(this.Key, this.InstrumentType, predicate);
     }
 
-    public PartialFeatureGateAsync ControlledBy(Func<Task<bool>> predicate)
+    public BaseFeatureGateAsync ControlledBy(Func<Task<bool>> predicate)
     {
-        return new PartialFeatureGateAsync(this.Key, this.InstrumentType, predicate);
+        return new BaseFeatureGateAsync(this.Key, this.InstrumentType, predicate);
     }
 
-    public class PartialFeatureGate
+    public class BaseFeatureGate : AbstractFeatureGate
     {
-        public PartialFeatureGate(string key, InstrumentType instrumentType, Func<bool> controlledBy)
+        public BaseFeatureGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy)
+            : base(featureGateKey, instrumentType)
         {
-            this.Key = key;
-            this.InstrumentType = instrumentType;
             this.ControlledBy = controlledBy;
         }
 
-        public string Key { get; }
-
-        public InstrumentType InstrumentType { get; }
-
         public Func<bool> ControlledBy { get; }
 
-        public FeatureGate WhenOpened(Action? action)
+        public PartialFeatureGate WhenOpened(Action? action)
         {
-            return new FeatureGate(this.Key, this.InstrumentType, this.ControlledBy, action, null);
+            return new PartialFeatureGate(this.Key, this.InstrumentType, this.ControlledBy, action);
         }
 
         public PartialFeatureGate<TResult> WhenOpened<TResult>(Func<TResult> function)
@@ -55,9 +50,9 @@ public class FeatureGateBuilder
             return new PartialFeatureGate<TResult>(this.Key, this.InstrumentType, this.ControlledBy, function);
         }
 
-        public FeatureGateAsync WhenOpened(Func<Task> function)
+        public PartialFeatureGateAsync WhenOpened(Func<Task> function)
         {
-            return new FeatureGateAsync(this.Key, this.InstrumentType, () => Task.Run(this.ControlledBy), function, null);
+            return new PartialFeatureGateAsync(this.Key, this.InstrumentType, () => Task.Run(this.ControlledBy), function);
         }
 
         public PartialFeatureGateAsync<TResult> WhenOpened<TResult>(Func<Task<TResult>> function)
@@ -66,24 +61,19 @@ public class FeatureGateBuilder
         }
     }
 
-    public class PartialFeatureGateAsync
+    public class BaseFeatureGateAsync : AbstractFeatureGate
     {
-        public PartialFeatureGateAsync(string key, InstrumentType instrumentType, Func<Task<bool>> controlledBy)
+        public BaseFeatureGateAsync(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy)
+            : base(featureGateKey, instrumentType)
         {
-            this.Key = key;
-            this.InstrumentType = instrumentType;
             this.ControlledBy = controlledBy;
         }
 
-        public string Key { get; }
-
-        public InstrumentType InstrumentType { get; }
-
         public Func<Task<bool>> ControlledBy { get; }
 
-        public FeatureGateAsync WhenOpened(Func<Task> function)
+        public PartialFeatureGateAsync WhenOpened(Func<Task> function)
         {
-            return new FeatureGateAsync(this.Key, this.InstrumentType, this.ControlledBy, function, null);
+            return new PartialFeatureGateAsync(this.Key, this.InstrumentType, this.ControlledBy, function);
         }
 
         public PartialFeatureGateAsync<TResult> WhenOpened<TResult>(Func<Task<TResult>> function)
@@ -91,7 +81,7 @@ public class FeatureGateBuilder
             return new PartialFeatureGateAsync<TResult>(this.Key, this.InstrumentType, this.ControlledBy, function);
         }
 
-        public FeatureGateAsync WhenOpened(Action action)
+        public PartialFeatureGateAsync WhenOpened(Action action)
         {
             return this.WhenOpened(() => Task.Run(action));
         }
@@ -102,19 +92,92 @@ public class FeatureGateBuilder
         }
     }
 
-    public class PartialFeatureGate<TResult>
+    public class PartialFeatureGate : AbstractFeatureGate
     {
-        public PartialFeatureGate(string key, InstrumentType instrumentType, Func<bool> controlledBy, Func<TResult> whenOpened)
+        public PartialFeatureGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy, Action? whenOpened)
+            : base(featureGateKey, instrumentType)
         {
-            this.Key = key;
-            this.InstrumentType = instrumentType;
             this.ControlledBy = controlledBy;
             this.WhenOpened = whenOpened;
         }
 
-        public string Key { get; }
+        public Func<bool> ControlledBy { get; }
 
-        public InstrumentType InstrumentType { get; }
+        public Action? WhenOpened { get; }
+
+        public FeatureGate WhenClosed(Action? action)
+        {
+            return new FeatureGate(
+                featureGateKey: this.Key,
+                instrumentType: this.InstrumentType,
+                controlledBy: this.ControlledBy,
+                whenOpened: this.WhenOpened,
+                whenClosed: action);
+        }
+
+        public FeatureGateAsync WhenClosed(Func<Task>? function)
+        {
+            return new FeatureGateAsync(
+                featureGateKey: this.Key,
+                instrumentType: this.InstrumentType,
+                controlledBy: () => Task.Run(this.ControlledBy),
+                whenOpened: this.WhenOpened == null ? null : () => Task.Run(this.WhenOpened),
+                whenClosed: function);
+        }
+
+        public void Invoke()
+        {
+            StaticFeatureGate.Invoke(this.Key, this.InstrumentType, this.ControlledBy, this.WhenOpened, null);
+        }
+    }
+
+    public class PartialFeatureGateAsync : AbstractFeatureGate
+    {
+        public PartialFeatureGateAsync(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task>? whenOpened)
+            : base(featureGateKey, instrumentType)
+        {
+            this.ControlledBy = controlledBy;
+            this.WhenOpened = whenOpened;
+        }
+
+        public Func<Task<bool>> ControlledBy { get; }
+
+        public Func<Task>? WhenOpened { get; }
+
+        public FeatureGateAsync WhenClosed(Func<Task>? function)
+        {
+            return new FeatureGateAsync(
+                featureGateKey: this.Key,
+                instrumentType: this.InstrumentType,
+                controlledBy: this.ControlledBy,
+                whenOpened: this.WhenOpened,
+                whenClosed: function);
+        }
+
+        public FeatureGateAsync WhenClosed(Action? action)
+        {
+            return new FeatureGateAsync(
+                featureGateKey: this.Key,
+                instrumentType: this.InstrumentType,
+                controlledBy: this.ControlledBy,
+                whenOpened: this.WhenOpened,
+                whenClosed: action == null ? null : () => Task.Run(action));
+        }
+
+        public async Task InvokeAsync()
+        {
+            await StaticFeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.ControlledBy, this.WhenOpened, null);
+        }
+    }
+
+    public class PartialFeatureGate<TResult> : AbstractFeatureGate
+    {
+        public PartialFeatureGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy, Func<TResult> whenOpened)
+            : base(featureGateKey, instrumentType)
+        {
+            this.ControlledBy = controlledBy;
+            this.WhenOpened = whenOpened;
+        }
 
         public Func<bool> ControlledBy { get; }
 
@@ -141,19 +204,14 @@ public class FeatureGateBuilder
         }
     }
 
-    public class PartialFeatureGateAsync<TResult>
+    public class PartialFeatureGateAsync<TResult> : AbstractFeatureGate
     {
-        public PartialFeatureGateAsync(string key, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened)
+        public PartialFeatureGateAsync(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened)
+            : base(featureGateKey, instrumentType)
         {
-            this.Key = key;
-            this.InstrumentType = instrumentType;
             this.ControlledBy = controlledBy;
             this.WhenOpened = whenOpened;
         }
-
-        public string Key { get; }
-
-        public InstrumentType InstrumentType { get; }
 
         public Func<Task<bool>> ControlledBy { get; }
 
