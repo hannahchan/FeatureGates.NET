@@ -2,7 +2,7 @@ namespace FeatureGates;
 
 using System;
 
-public class FeatureGate : AbstractFeatureGate
+public partial class FeatureGate : AbstractFeatureGate
 {
     public FeatureGate(string featureGateKey, Func<bool> controlledBy, Action? whenOpened, Action? whenClosed)
         : base(featureGateKey, InstrumentType.Counter)
@@ -25,11 +25,6 @@ public class FeatureGate : AbstractFeatureGate
     public Action? WhenOpened { get; }
 
     public Action? WhenClosed { get; }
-
-    public static FeatureGateBuilder WithKey(string featureGateKey)
-    {
-        return new FeatureGateBuilder(featureGateKey);
-    }
 
     public void Invoke()
     {

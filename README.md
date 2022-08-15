@@ -36,8 +36,7 @@ Create a feature gate and invoke it like the following;
 string myFeatureFlag = "MyCoolNewFeature";
 bool IsEnabled() => myFeatureManager.Evaluate(myFeatureFlag);
 
-var featureGate = FeatureGate
-    .WithKey(myFeatureFlag)
+var featureGate = FeatureGate.WithKey(myFeatureFlag)
     .ControlledBy(IsEnabled)
     .WhenOpened(() =>
     {
@@ -55,7 +54,7 @@ Feature gate executions are recorded every time a feature gate is invoked. A fea
 
 ### Construction
 
-The easiest way to create a feature gate is to call the static method `FeatureGate.WithKey("MyFeatureGateKey")` which will return a `FeatureGateBuilder`. The `FeatureGateBuilder` will allow you to chain methods to help you correctly create the type of feature gate you need.
+The easiest way to create a feature gate is to call the static method `FeatureGate.WithKey("MyFeatureGateKey")` which will return a `FeatureGate` builder. The `FeatureGate` builder will allow you to chain methods to help you correctly create the type of feature gate you need.
 
 Alternatively you can instantiate the type of feature gate you need by calling its constructor. There are only four types;
 
@@ -64,7 +63,7 @@ Alternatively you can instantiate the type of feature gate you need by calling i
 - `FeatureGate<TResult>`
 - `FeatureGateAsync<TResult>`
 
-Once created feature gates are immutable. Calling methods that mutate a feature gate will return a new instance of that feature gate with that mutation.
+Once created, feature gates are immutable.
 
 ### Feature Gate Key
 
