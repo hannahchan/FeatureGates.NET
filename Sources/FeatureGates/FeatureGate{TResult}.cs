@@ -5,11 +5,8 @@ using System;
 public class FeatureGate<TResult> : AbstractFeatureGate
 {
     public FeatureGate(string featureGateKey, Func<bool> controlledBy, Func<TResult> whenOpened, Func<TResult> whenClosed)
-        : base(featureGateKey, InstrumentType.Counter)
+        : this(featureGateKey, InstrumentType.Counter, controlledBy, whenOpened, whenClosed)
     {
-        this.ControlledBy = controlledBy;
-        this.WhenOpened = whenOpened;
-        this.WhenClosed = whenClosed;
     }
 
     public FeatureGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy, Func<TResult> whenOpened, Func<TResult> whenClosed)
