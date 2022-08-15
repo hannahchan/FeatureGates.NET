@@ -3,7 +3,6 @@ namespace FeatureGates.UnitTests;
 using FeatureGates.UnitTests.Helpers;
 using Xunit;
 
-[Collection(TestCollection.FeatureGateInvocations)]
 public class FeatureGateTResultUnitTests
 {
     [Theory]

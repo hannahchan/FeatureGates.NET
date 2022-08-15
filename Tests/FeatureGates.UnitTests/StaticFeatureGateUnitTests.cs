@@ -5,7 +5,6 @@ using Xunit;
 
 public class StaticFeatureGateUnitTests
 {
-    [Collection(TestCollection.FeatureGateInvocations)]
     public class Invoke
     {
         [Theory]
@@ -28,7 +27,6 @@ public class StaticFeatureGateUnitTests
         }
     }
 
-    [Collection(TestCollection.FeatureGateInvocations)]
     public class InvokeTResult
     {
         [Theory]
@@ -49,7 +47,6 @@ public class StaticFeatureGateUnitTests
         }
     }
 
-    [Collection(TestCollection.FeatureGateInvocations)]
     public class InvokeAsync
     {
         [Theory]
@@ -72,7 +69,6 @@ public class StaticFeatureGateUnitTests
         }
     }
 
-    [Collection(TestCollection.FeatureGateInvocations)]
     public class InvokeAsyncTResult
     {
         [Theory]

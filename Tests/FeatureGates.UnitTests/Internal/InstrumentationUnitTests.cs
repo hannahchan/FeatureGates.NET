@@ -9,7 +9,6 @@ using Xunit;
 
 public class InstrumentationUnitTests
 {
-    [Collection(TestCollection.FeatureGateInvocations)]
     public class RecordExecution
     {
         [Theory]
@@ -366,7 +365,6 @@ public class InstrumentationUnitTests
         }
     }
 
-    [Collection(TestCollection.FeatureGateInvocations)]
     public class RecordExecutionTResult
     {
         [Theory]
@@ -587,7 +585,6 @@ public class InstrumentationUnitTests
         }
     }
 
-    [Collection(TestCollection.FeatureGateInvocations)]
     public class RecordExecutionAsync
     {
         [Theory]
@@ -944,7 +941,6 @@ public class InstrumentationUnitTests
         }
     }
 
-    [Collection(TestCollection.FeatureGateInvocations)]
     public class RecordExecutionAsyncTResult
     {
         [Theory]

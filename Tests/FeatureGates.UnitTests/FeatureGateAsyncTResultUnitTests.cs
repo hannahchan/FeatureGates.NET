@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FeatureGates.UnitTests.Helpers;
 using Xunit;
 
-[Collection(TestCollection.FeatureGateInvocations)]
 public class FeatureGateAsyncTResultUnitTests
 {
     [Theory]

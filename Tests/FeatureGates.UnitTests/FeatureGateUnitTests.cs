@@ -4,7 +4,6 @@ using System;
 using FeatureGates.UnitTests.Helpers;
 using Xunit;
 
-[Collection(TestCollection.FeatureGateInvocations)]
 public class FeatureGateUnitTests
 {
     [Fact]
