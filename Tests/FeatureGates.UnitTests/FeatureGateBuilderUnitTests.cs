@@ -33,11 +33,13 @@ public class FeatureGateBuilderUnitTests
             // Act
             FeatureGate.BaseGate baseGate = builder
                 .WithHistogram()
+                .WithFallbackOnException()
                 .ControlledBy(Test.BooleanFunction);
 
             // Assert
             Assert.Equal("myFeatureGateKey", baseGate.Key);
             Assert.Equal(InstrumentType.Histogram, baseGate.InstrumentType);
+            Assert.True(baseGate.FallbackOnException);
             Assert.Equal(Test.BooleanFunction, baseGate.ControlledBy);
         }
 
@@ -54,6 +56,7 @@ public class FeatureGateBuilderUnitTests
             // Assert
             Assert.Equal("myFeatureGateKey", baseGate.Key);
             Assert.Equal(InstrumentType.Counter, baseGate.InstrumentType);
+            Assert.False(baseGate.FallbackOnException);
             Assert.Equal(Test.BooleanFunctionAsync, baseGate.ControlledBy);
         }
     }
@@ -64,7 +67,7 @@ public class FeatureGateBuilderUnitTests
         public void When_OpenedByAction_Expect_HalfGate()
         {
             // Arrange
-            FeatureGate.BaseGate baseGate = new FeatureGate.BaseGate("myFeatureGateKey", InstrumentType.None, Test.BooleanFunction);
+            FeatureGate.BaseGate baseGate = new FeatureGate.BaseGate("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunction);
 
             // Act
             FeatureGate.HalfGate halfGate = baseGate.WhenOpened(Test.Action);
@@ -79,7 +82,7 @@ public class FeatureGateBuilderUnitTests
         public void When_OpenedByFunction_Expect_PartialResultGate()
         {
             // Arrange
-            FeatureGate.BaseGate baseGate = new FeatureGate.BaseGate("myFeatureGateKey", InstrumentType.None, Test.BooleanFunction);
+            FeatureGate.BaseGate baseGate = new FeatureGate.BaseGate("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunction);
 
             // Act
             FeatureGate.PartialResultGate<string> partialResultGate = baseGate.WhenOpened(Test.Function<string>);
@@ -93,7 +96,7 @@ public class FeatureGateBuilderUnitTests
         public void When_OpenedByActionAsync_Expect_HalfGateAsync()
         {
             // Arrange
-            FeatureGate.BaseGate baseGate = new FeatureGate.BaseGate("myFeatureGateKey", InstrumentType.None, Test.BooleanFunction);
+            FeatureGate.BaseGate baseGate = new FeatureGate.BaseGate("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunction);
 
             // Act
             FeatureGate.HalfGateAsync halfGate = baseGate.WhenOpened(Test.ActionAsync);
@@ -108,7 +111,7 @@ public class FeatureGateBuilderUnitTests
         public void When_OpenedByFunctionAsync_Expect_PartialResultGateAsync()
         {
             // Arrange
-            FeatureGate.BaseGate baseGate = new FeatureGate.BaseGate("myFeatureGateKey", InstrumentType.None, Test.BooleanFunction);
+            FeatureGate.BaseGate baseGate = new FeatureGate.BaseGate("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunction);
 
             // Act
             FeatureGate.PartialResultGateAsync<string> partialResultGate = baseGate.WhenOpened(Test.FunctionAsync<string>);
@@ -125,7 +128,7 @@ public class FeatureGateBuilderUnitTests
         public void When_OpenedByAction_Expect_HalfGateAsync()
         {
             // Arrange
-            FeatureGate.BaseGateAsync baseGate = new FeatureGate.BaseGateAsync("myFeatureGateKey", InstrumentType.None, Test.BooleanFunctionAsync);
+            FeatureGate.BaseGateAsync baseGate = new FeatureGate.BaseGateAsync("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunctionAsync);
 
             // Act
             FeatureGate.HalfGateAsync halfGate = baseGate.WhenOpened(Test.Action);
@@ -140,7 +143,7 @@ public class FeatureGateBuilderUnitTests
         public void When_OpenedByFunction_Expect_PartialResultGateAsync()
         {
             // Arrange
-            FeatureGate.BaseGateAsync baseGate = new FeatureGate.BaseGateAsync("myFeatureGateKey", InstrumentType.None, Test.BooleanFunctionAsync);
+            FeatureGate.BaseGateAsync baseGate = new FeatureGate.BaseGateAsync("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunctionAsync);
 
             // Act
             FeatureGate.PartialResultGateAsync<string> partialResultGate = baseGate.WhenOpened(Test.Function<string>);
@@ -154,7 +157,7 @@ public class FeatureGateBuilderUnitTests
         public void When_OpenedByActionAsync_Expect_HalfGateAsync()
         {
             // Arrange
-            FeatureGate.BaseGateAsync baseGate = new FeatureGate.BaseGateAsync("myFeatureGateKey", InstrumentType.None, Test.BooleanFunctionAsync);
+            FeatureGate.BaseGateAsync baseGate = new FeatureGate.BaseGateAsync("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunctionAsync);
 
             // Act
             FeatureGate.HalfGateAsync halfGate = baseGate.WhenOpened(Test.ActionAsync);
@@ -169,7 +172,7 @@ public class FeatureGateBuilderUnitTests
         public void When_OpenedByFunctionAsync_Expect_PartialResultGateAsync()
         {
             // Arrange
-            FeatureGate.BaseGateAsync baseGate = new FeatureGate.BaseGateAsync("myFeatureGateKey", InstrumentType.None, Test.BooleanFunctionAsync);
+            FeatureGate.BaseGateAsync baseGate = new FeatureGate.BaseGateAsync("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunctionAsync);
 
             // Act
             FeatureGate.PartialResultGateAsync<string> partialResultGate = baseGate.WhenOpened(Test.FunctionAsync<string>);
@@ -186,7 +189,7 @@ public class FeatureGateBuilderUnitTests
         public void When_ClosedByAction_Expect_FeatureGate()
         {
             // Arrange
-            FeatureGate.HalfGate halfGate = new FeatureGate.HalfGate("myFeatureGateKey", InstrumentType.None, Test.BooleanFunction, Test.Action);
+            FeatureGate.HalfGate halfGate = new FeatureGate.HalfGate("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunction, Test.Action);
 
             // Act
             FeatureGate featureGate = halfGate.WhenClosed(Test.Action);
@@ -201,7 +204,7 @@ public class FeatureGateBuilderUnitTests
         public async Task When_ClosedByActionAsync_Expect_FeatureGateAsync()
         {
             // Arrange
-            FeatureGate.HalfGate halfGate = new FeatureGate.HalfGate("myFeatureGateKey", InstrumentType.None, Test.BooleanFunction, Test.Action);
+            FeatureGate.HalfGate halfGate = new FeatureGate.HalfGate("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunction, Test.Action);
 
             // Act
             FeatureGateAsync featureGate = halfGate.WhenClosed(Test.ActionAsync);
@@ -216,7 +219,7 @@ public class FeatureGateBuilderUnitTests
         public void When_ClosedByActionAsyncAndWhenOpenedIsNull_Expect_FeatureGateAsync()
         {
             // Arrange
-            FeatureGate.HalfGate halfGate = new FeatureGate.HalfGate("myFeatureGateKey", InstrumentType.None, Test.BooleanFunction, null);
+            FeatureGate.HalfGate halfGate = new FeatureGate.HalfGate("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunction, null);
 
             // Act
             FeatureGateAsync featureGate = halfGate.WhenClosed(Test.ActionAsync);
@@ -234,7 +237,7 @@ public class FeatureGateBuilderUnitTests
         public void When_ClosedByActionAsync_Expect_FeatureGateAsync()
         {
             // Arrange
-            FeatureGate.HalfGateAsync halfGate = new FeatureGate.HalfGateAsync("myFeatureGateKey", InstrumentType.None, Test.BooleanFunctionAsync, Test.ActionAsync);
+            FeatureGate.HalfGateAsync halfGate = new FeatureGate.HalfGateAsync("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunctionAsync, Test.ActionAsync);
 
             // Act
             FeatureGateAsync featureGate = halfGate.WhenClosed(Test.ActionAsync);
@@ -249,7 +252,7 @@ public class FeatureGateBuilderUnitTests
         public void When_ClosedByAction_Expect_FeatureGate()
         {
             // Arrange
-            FeatureGate.HalfGateAsync halfGate = new FeatureGate.HalfGateAsync("myFeatureGateKey", InstrumentType.None, Test.BooleanFunctionAsync, Test.ActionAsync);
+            FeatureGate.HalfGateAsync halfGate = new FeatureGate.HalfGateAsync("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunctionAsync, Test.ActionAsync);
 
             // Act
             FeatureGateAsync featureGate = halfGate.WhenClosed(Test.Action);
@@ -264,7 +267,7 @@ public class FeatureGateBuilderUnitTests
         public void When_ClosedByNullAction_Expect_FeatureGateAsync()
         {
             // Arrange
-            FeatureGate.HalfGateAsync halfGate = new FeatureGate.HalfGateAsync("myFeatureGateKey", InstrumentType.None, Test.BooleanFunctionAsync, Test.ActionAsync);
+            FeatureGate.HalfGateAsync halfGate = new FeatureGate.HalfGateAsync("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunctionAsync, Test.ActionAsync);
 
             // Act
             FeatureGateAsync featureGate = halfGate.WhenClosed(null as Action);
@@ -283,7 +286,7 @@ public class FeatureGateBuilderUnitTests
         {
             // Arrange
             FeatureGate.PartialResultGate<string> resultGate =
-                new FeatureGate.PartialResultGate<string>("myFeatureGateKey", InstrumentType.None, Test.BooleanFunction, Test.Function<string>);
+                new FeatureGate.PartialResultGate<string>("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunction, Test.Function<string>);
 
             // Act
             FeatureGate<string> featureGate = resultGate.WhenClosed(Test.Function<string>);
@@ -299,7 +302,7 @@ public class FeatureGateBuilderUnitTests
         {
             // Arrange
             FeatureGate.PartialResultGate<string> resultGate =
-                new FeatureGate.PartialResultGate<string>("myFeatureGateKey", InstrumentType.None, Test.BooleanFunction, Test.Function<string>);
+                new FeatureGate.PartialResultGate<string>("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunction, Test.Function<string>);
 
             // Act
             FeatureGateAsync<string> featureGate = resultGate.WhenClosed(Test.FunctionAsync<string>);
@@ -318,7 +321,7 @@ public class FeatureGateBuilderUnitTests
         {
             // Arrange
             FeatureGate.PartialResultGateAsync<string> resultGate =
-                new FeatureGate.PartialResultGateAsync<string>("myFeatureGateKey", InstrumentType.None, Test.BooleanFunctionAsync, Test.FunctionAsync<string>);
+                new FeatureGate.PartialResultGateAsync<string>("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunctionAsync, Test.FunctionAsync<string>);
 
             // Act
             FeatureGateAsync<string> featureGate = resultGate.WhenClosed(Test.FunctionAsync<string>);
@@ -334,7 +337,7 @@ public class FeatureGateBuilderUnitTests
         {
             // Arrange
             FeatureGate.PartialResultGateAsync<string> resultGate =
-                new FeatureGate.PartialResultGateAsync<string>("myFeatureGateKey", InstrumentType.None, Test.BooleanFunctionAsync, Test.FunctionAsync<string>);
+                new FeatureGate.PartialResultGateAsync<string>("myFeatureGateKey", InstrumentType.None, false, Test.BooleanFunctionAsync, Test.FunctionAsync<string>);
 
             // Act
             FeatureGateAsync<string> featureGate = resultGate.WhenClosed(Test.Function<string>);

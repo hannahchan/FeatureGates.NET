@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 public class FeatureGateAsync : AbstractFeatureGate
 {
     public FeatureGateAsync(string featureGateKey, Func<Task<bool>> controlledBy, Func<Task>? whenOpened, Func<Task>? whenClosed)
-        : this(featureGateKey, InstrumentType.Counter, controlledBy, whenOpened, whenClosed)
+        : this(featureGateKey, InstrumentType.Counter, false, controlledBy, whenOpened, whenClosed)
     {
     }
 
-    public FeatureGateAsync(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task>? whenOpened, Func<Task>? whenClosed)
-        : base(featureGateKey, instrumentType)
+    public FeatureGateAsync(string featureGateKey, InstrumentType instrumentType, bool fallbackOnException, Func<Task<bool>> controlledBy, Func<Task>? whenOpened, Func<Task>? whenClosed)
+        : base(featureGateKey, instrumentType, fallbackOnException)
     {
         this.ControlledBy = controlledBy;
         this.WhenOpened = whenOpened;
@@ -26,6 +26,6 @@ public class FeatureGateAsync : AbstractFeatureGate
 
     public async Task InvokeAsync()
     {
-        await StaticFeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.ControlledBy, this.WhenOpened, this.WhenClosed);
+        await InternalFeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);
     }
 }

@@ -35,14 +35,12 @@ internal static class Program
             .AddSource("FeatureGates")
             .Build();
 
-        FeatureGateAsync featureGate1 = FeatureGate
-            .WithKey("MyCounterGate")
+        FeatureGateAsync featureGate1 = FeatureGate.WithKey("MyCounterGate")
             .ControlledBy(Example.BooleanFunction)
             .WhenOpened(Example.ActionAsync)
             .WhenClosed(Example.ActionAsync);
 
-        FeatureGateAsync featureGate2 = FeatureGate
-            .WithKey("MyHistogramGate")
+        FeatureGateAsync featureGate2 = FeatureGate.WithKey("MyHistogramGate")
             .WithHistogram()
             .ControlledBy(Example.BooleanFunction)
             .WhenOpened(Example.ActionAsync)

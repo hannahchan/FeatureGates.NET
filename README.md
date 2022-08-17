@@ -75,9 +75,13 @@ The feature gate key is a unique string identifier that you define for each of y
 
 By default, feature gates are configured to record executions using a counter. If you want to capture timings for your feature, you can change the instrument type of your feature gate during its construction to a histogram. Histograms should be used cautiously as they use more memory than counters.
 
+### Fallback on Exception
+
+A feature gate can be configured to execute its `WhenClosed` operation when an uncaught exception is thrown during execution of its `WhenOpened` operation. This behavior is not enabled by default and can be enabled during construction of your feature gate.
+
 ## Metrics
 
-> **Warning** - Metric names currently unstable.
+> **Warning** - Metric names are currently unstable.
 
 Depending on the instrument type configured for a feature gate, feature gates will output one of the following metrics.
 
@@ -88,7 +92,7 @@ Depending on the instrument type configured for a feature gate, feature gates wi
 
 ### Metric Attributes
 
-> **Warning** - Metric attributes currently unstable.
+> **Warning** - Metric attributes are currently unstable.
 
 The metrics that feature gates output can be aggregated or filtered on the following dimensions.
 

@@ -21,27 +21,35 @@ public partial class FeatureGate
 
         public InstrumentType InstrumentType { get; private set; } = InstrumentType.Counter;
 
+        public bool FallbackOnException { get; private set; }
+
         public Builder WithHistogram()
         {
             this.InstrumentType = InstrumentType.Histogram;
             return this;
         }
 
+        public Builder WithFallbackOnException()
+        {
+            this.FallbackOnException = true;
+            return this;
+        }
+
         public BaseGate ControlledBy(Func<bool> predicate)
         {
-            return new BaseGate(this.Key, this.InstrumentType, predicate);
+            return new BaseGate(this.Key, this.InstrumentType, this.FallbackOnException, predicate);
         }
 
         public BaseGateAsync ControlledBy(Func<Task<bool>> predicate)
         {
-            return new BaseGateAsync(this.Key, this.InstrumentType, predicate);
+            return new BaseGateAsync(this.Key, this.InstrumentType, this.FallbackOnException, predicate);
         }
     }
 
     public class BaseGate : AbstractFeatureGate
     {
-        internal BaseGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy)
-            : base(featureGateKey, instrumentType)
+        internal BaseGate(string featureGateKey, InstrumentType instrumentType, bool fallbackOnException, Func<bool> controlledBy)
+            : base(featureGateKey, instrumentType, fallbackOnException)
         {
             this.ControlledBy = controlledBy;
         }
@@ -50,29 +58,29 @@ public partial class FeatureGate
 
         public HalfGate WhenOpened(Action? action)
         {
-            return new HalfGate(this.Key, this.InstrumentType, this.ControlledBy, action);
+            return new HalfGate(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, action);
         }
 
         public PartialResultGate<TResult> WhenOpened<TResult>(Func<TResult> function)
         {
-            return new PartialResultGate<TResult>(this.Key, this.InstrumentType, this.ControlledBy, function);
+            return new PartialResultGate<TResult>(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, function);
         }
 
         public HalfGateAsync WhenOpened(Func<Task> function)
         {
-            return new HalfGateAsync(this.Key, this.InstrumentType, () => Task.Run(this.ControlledBy), function);
+            return new HalfGateAsync(this.Key, this.InstrumentType, this.FallbackOnException, () => Task.Run(this.ControlledBy), function);
         }
 
         public PartialResultGateAsync<TResult> WhenOpened<TResult>(Func<Task<TResult>> function)
         {
-            return new PartialResultGateAsync<TResult>(this.Key, this.InstrumentType, () => Task.Run(this.ControlledBy), function);
+            return new PartialResultGateAsync<TResult>(this.Key, this.InstrumentType, this.FallbackOnException, () => Task.Run(this.ControlledBy), function);
         }
     }
 
     public class BaseGateAsync : AbstractFeatureGate
     {
-        internal BaseGateAsync(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy)
-            : base(featureGateKey, instrumentType)
+        internal BaseGateAsync(string featureGateKey, InstrumentType instrumentType, bool fallbackOnException, Func<Task<bool>> controlledBy)
+            : base(featureGateKey, instrumentType, fallbackOnException)
         {
             this.ControlledBy = controlledBy;
         }
@@ -81,12 +89,12 @@ public partial class FeatureGate
 
         public HalfGateAsync WhenOpened(Func<Task> function)
         {
-            return new HalfGateAsync(this.Key, this.InstrumentType, this.ControlledBy, function);
+            return new HalfGateAsync(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, function);
         }
 
         public PartialResultGateAsync<TResult> WhenOpened<TResult>(Func<Task<TResult>> function)
         {
-            return new PartialResultGateAsync<TResult>(this.Key, this.InstrumentType, this.ControlledBy, function);
+            return new PartialResultGateAsync<TResult>(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, function);
         }
 
         public HalfGateAsync WhenOpened(Action action)
@@ -102,8 +110,8 @@ public partial class FeatureGate
 
     public class HalfGate : FeatureGate
     {
-        internal HalfGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy, Action? whenOpened)
-            : base(featureGateKey, instrumentType, controlledBy, whenOpened, null)
+        internal HalfGate(string featureGateKey, InstrumentType instrumentType, bool fallbackOnException, Func<bool> controlledBy, Action? whenOpened)
+            : base(featureGateKey, instrumentType, fallbackOnException, controlledBy, whenOpened, null)
         {
         }
 
@@ -112,6 +120,7 @@ public partial class FeatureGate
             return new FeatureGate(
                 featureGateKey: this.Key,
                 instrumentType: this.InstrumentType,
+                fallbackOnException: this.FallbackOnException,
                 controlledBy: this.ControlledBy,
                 whenOpened: this.WhenOpened,
                 whenClosed: action);
@@ -122,6 +131,7 @@ public partial class FeatureGate
             return new FeatureGateAsync(
                 featureGateKey: this.Key,
                 instrumentType: this.InstrumentType,
+                fallbackOnException: this.FallbackOnException,
                 controlledBy: () => Task.Run(this.ControlledBy),
                 whenOpened: this.WhenOpened == null ? null : () => Task.Run(this.WhenOpened),
                 whenClosed: function);
@@ -130,8 +140,8 @@ public partial class FeatureGate
 
     public class HalfGateAsync : FeatureGateAsync
     {
-        internal HalfGateAsync(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task>? whenOpened)
-            : base(featureGateKey, instrumentType, controlledBy, whenOpened, null)
+        internal HalfGateAsync(string featureGateKey, InstrumentType instrumentType, bool fallbackOnException, Func<Task<bool>> controlledBy, Func<Task>? whenOpened)
+            : base(featureGateKey, instrumentType, fallbackOnException, controlledBy, whenOpened, null)
         {
         }
 
@@ -140,6 +150,7 @@ public partial class FeatureGate
             return new FeatureGateAsync(
                 featureGateKey: this.Key,
                 instrumentType: this.InstrumentType,
+                fallbackOnException: this.FallbackOnException,
                 controlledBy: this.ControlledBy,
                 whenOpened: this.WhenOpened,
                 whenClosed: function);
@@ -150,6 +161,7 @@ public partial class FeatureGate
             return new FeatureGateAsync(
                 featureGateKey: this.Key,
                 instrumentType: this.InstrumentType,
+                fallbackOnException: this.FallbackOnException,
                 controlledBy: this.ControlledBy,
                 whenOpened: this.WhenOpened,
                 whenClosed: action == null ? null : () => Task.Run(action));
@@ -158,8 +170,8 @@ public partial class FeatureGate
 
     public class PartialResultGate<TResult> : AbstractFeatureGate
     {
-        internal PartialResultGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy, Func<TResult> whenOpened)
-            : base(featureGateKey, instrumentType)
+        internal PartialResultGate(string featureGateKey, InstrumentType instrumentType, bool fallbackOnException, Func<bool> controlledBy, Func<TResult> whenOpened)
+            : base(featureGateKey, instrumentType, fallbackOnException)
         {
             this.ControlledBy = controlledBy;
             this.WhenOpened = whenOpened;
@@ -174,6 +186,7 @@ public partial class FeatureGate
             return new FeatureGate<TResult>(
                 featureGateKey: this.Key,
                 instrumentType: this.InstrumentType,
+                fallbackOnException: this.FallbackOnException,
                 controlledBy: this.ControlledBy,
                 whenOpened: this.WhenOpened,
                 whenClosed: function);
@@ -184,6 +197,7 @@ public partial class FeatureGate
             return new FeatureGateAsync<TResult>(
                 featureGateKey: this.Key,
                 instrumentType: this.InstrumentType,
+                fallbackOnException: this.FallbackOnException,
                 controlledBy: () => Task.Run(this.ControlledBy),
                 whenOpened: () => Task.Run(this.WhenOpened),
                 whenClosed: function);
@@ -192,8 +206,8 @@ public partial class FeatureGate
 
     public class PartialResultGateAsync<TResult> : AbstractFeatureGate
     {
-        internal PartialResultGateAsync(string featureGateKey, InstrumentType instrumentType, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened)
-            : base(featureGateKey, instrumentType)
+        internal PartialResultGateAsync(string featureGateKey, InstrumentType instrumentType, bool fallbackOnException, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened)
+            : base(featureGateKey, instrumentType, fallbackOnException)
         {
             this.ControlledBy = controlledBy;
             this.WhenOpened = whenOpened;
@@ -208,6 +222,7 @@ public partial class FeatureGate
             return new FeatureGateAsync<TResult>(
                 featureGateKey: this.Key,
                 instrumentType: this.InstrumentType,
+                fallbackOnException: this.FallbackOnException,
                 controlledBy: this.ControlledBy,
                 whenOpened: this.WhenOpened,
                 whenClosed: function);
@@ -218,6 +233,7 @@ public partial class FeatureGate
             return new FeatureGateAsync<TResult>(
                 featureGateKey: this.Key,
                 instrumentType: this.InstrumentType,
+                fallbackOnException: this.FallbackOnException,
                 controlledBy: this.ControlledBy,
                 whenOpened: this.WhenOpened,
                 whenClosed: () => Task.Run(function));

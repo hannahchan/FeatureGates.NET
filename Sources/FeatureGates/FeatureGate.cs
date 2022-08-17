@@ -5,12 +5,12 @@ using System;
 public partial class FeatureGate : AbstractFeatureGate
 {
     public FeatureGate(string featureGateKey, Func<bool> controlledBy, Action? whenOpened, Action? whenClosed)
-        : this(featureGateKey, InstrumentType.Counter, controlledBy, whenOpened, whenClosed)
+        : this(featureGateKey, InstrumentType.Counter, false, controlledBy, whenOpened, whenClosed)
     {
     }
 
-    public FeatureGate(string featureGateKey, InstrumentType instrumentType, Func<bool> controlledBy, Action? whenOpened, Action? whenClosed)
-        : base(featureGateKey, instrumentType)
+    public FeatureGate(string featureGateKey, InstrumentType instrumentType, bool fallbackOnException, Func<bool> controlledBy, Action? whenOpened, Action? whenClosed)
+        : base(featureGateKey, instrumentType, fallbackOnException)
     {
         this.ControlledBy = controlledBy;
         this.WhenOpened = whenOpened;
@@ -25,6 +25,6 @@ public partial class FeatureGate : AbstractFeatureGate
 
     public void Invoke()
     {
-        StaticFeatureGate.Invoke(this.Key, this.InstrumentType, this.ControlledBy, this.WhenOpened, this.WhenClosed);
+        InternalFeatureGate.Invoke(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);
     }
 }
