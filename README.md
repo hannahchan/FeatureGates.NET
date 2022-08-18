@@ -107,7 +107,7 @@ The metrics that feature gates output can be aggregated or filtered on the follo
 In order to collect metrics from your feature gates, you will need to subscribe to the `Meter` named `FeatureGates`. If using the [OpenTelemetry .NET](https://github.com/open-telemetry/opentelemetry-dotnet) SDK, you can do this by calling `AddMeter("FeatureGates")` while building your `MeterProvider`. For example;
 
 ```C#
-using MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
+MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
     // Other configuration
     .AddMeter("FeatureGates")
     // Other configuration
@@ -155,7 +155,7 @@ When an uncaught exception occurs during a feature gate execution, a span event 
 In order to collect spans from your feature gates, you will need to subscribe to the `ActivitySource` named `FeatureGates`. If using the [OpenTelemetry .NET](https://github.com/open-telemetry/opentelemetry-dotnet) SDK, you can do this by calling `AddSource("FeatureGates")` while building your `TracerProvider`. For example;
 
 ```C#
-using TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
+TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
     // Other configuration
     .AddSource("FeatureGates")
     // Other configuration
