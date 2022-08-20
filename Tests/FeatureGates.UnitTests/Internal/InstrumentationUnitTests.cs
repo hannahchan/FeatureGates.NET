@@ -68,7 +68,7 @@ public class InstrumentationUnitTests
                             Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
                             Assert.Null(measurement.Instrument.Unit);
                             Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
+                            Assert.Equal(1, Assert.IsType<long>(measurement.Value));
                             break;
 
                         case InstrumentType.Histogram:
@@ -153,7 +153,7 @@ public class InstrumentationUnitTests
                             Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
                             Assert.Null(measurement.Instrument.Unit);
                             Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
+                            Assert.Equal(1, Assert.IsType<long>(measurement.Value));
                             break;
 
                         case InstrumentType.Histogram:
@@ -240,7 +240,7 @@ public class InstrumentationUnitTests
                             Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
                             Assert.Null(measurement.Instrument.Unit);
                             Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
+                            Assert.Equal(1, Assert.IsType<long>(measurement.Value));
                             break;
 
                         case InstrumentType.Histogram:
@@ -421,7 +421,7 @@ public class InstrumentationUnitTests
                             Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
                             Assert.Null(measurement.Instrument.Unit);
                             Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
+                            Assert.Equal(1, Assert.IsType<long>(measurement.Value));
                             break;
 
                         case InstrumentType.Histogram:
@@ -508,7 +508,7 @@ public class InstrumentationUnitTests
                             Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
                             Assert.Null(measurement.Instrument.Unit);
                             Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
+                            Assert.Equal(1, Assert.IsType<long>(measurement.Value));
                             break;
 
                         case InstrumentType.Histogram:
@@ -644,7 +644,7 @@ public class InstrumentationUnitTests
                             Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
                             Assert.Null(measurement.Instrument.Unit);
                             Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
+                            Assert.Equal(1, Assert.IsType<long>(measurement.Value));
                             break;
 
                         case InstrumentType.Histogram:
@@ -729,7 +729,7 @@ public class InstrumentationUnitTests
                             Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
                             Assert.Null(measurement.Instrument.Unit);
                             Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
+                            Assert.Equal(1, Assert.IsType<long>(measurement.Value));
                             break;
 
                         case InstrumentType.Histogram:
@@ -816,7 +816,7 @@ public class InstrumentationUnitTests
                             Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
                             Assert.Null(measurement.Instrument.Unit);
                             Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
+                            Assert.Equal(1, Assert.IsType<long>(measurement.Value));
                             break;
 
                         case InstrumentType.Histogram:
@@ -997,7 +997,7 @@ public class InstrumentationUnitTests
                             Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
                             Assert.Null(measurement.Instrument.Unit);
                             Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
+                            Assert.Equal(1, Assert.IsType<long>(measurement.Value));
                             break;
 
                         case InstrumentType.Histogram:
@@ -1084,7 +1084,7 @@ public class InstrumentationUnitTests
                             Assert.Equal("feature.gate.executions", measurement.Instrument.Name);
                             Assert.Null(measurement.Instrument.Unit);
                             Assert.Equal("measures the number of times a feature gate has been executed", measurement.Instrument.Description);
-                            Assert.Equal(1, Assert.IsType<int>(measurement.Value));
+                            Assert.Equal(1, Assert.IsType<long>(measurement.Value));
                             break;
 
                         case InstrumentType.Histogram:

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 internal static class Instrumentation
 {
-    private static readonly Counter<int> ExecutionCounter = Library.Meter.CreateCounter<int>(
+    private static readonly Counter<long> ExecutionCounter = Library.Meter.CreateCounter<long>(
         name: "feature.gate.executions",
         unit: null,
         description: "measures the number of times a feature gate has been executed");
