@@ -1,6 +1,6 @@
 # FeatureGates for .NET
 
-Release observable features by using FeatureGates, pre-instrumented abstractions that replace `if` statements.
+Release observable features by using FeatureGates, instrumented abstractions that replace `if` statements.
 
 The aim of FeatureGates is to enable reusable dashboards, tooling and automation by standardizing the way metrics and traces are emitted. These metrics and traces can then be collected and shipped via [OpenTelemetry](https://opentelemetry.io/) or by other means.
 

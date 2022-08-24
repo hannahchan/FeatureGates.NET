@@ -3,7 +3,7 @@ namespace FeatureGates;
 using System;
 using System.Threading.Tasks;
 
-/// <summary>Represents an asynchronous feature gate.</summary>
+/// <summary>Represents an instrumented asynchronous feature gate.</summary>
 public class FeatureGateAsync : AbstractFeatureGate
 {
     /// <summary>Initializes a new instance of the <see cref="FeatureGateAsync" /> class.</summary>

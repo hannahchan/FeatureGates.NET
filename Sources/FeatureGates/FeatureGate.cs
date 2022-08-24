@@ -2,7 +2,7 @@ namespace FeatureGates;
 
 using System;
 
-/// <summary>Represents a feature gate.</summary>
+/// <summary>Represents an instrumented feature gate.</summary>
 public partial class FeatureGate : AbstractFeatureGate
 {
     /// <summary>Initializes a new instance of the <see cref="FeatureGate" /> class.</summary>

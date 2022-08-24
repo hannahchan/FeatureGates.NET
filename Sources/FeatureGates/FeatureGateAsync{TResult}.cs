@@ -3,7 +3,7 @@ namespace FeatureGates;
 using System;
 using System.Threading.Tasks;
 
-/// <summary>Represents an asynchronous feature gate that returns a result.</summary>
+/// <summary>Represents an instrumented asynchronous feature gate that returns a result.</summary>
 /// <typeparam name="TResult">The type of the result returned by the feature gate.</typeparam>
 public class FeatureGateAsync<TResult> : AbstractFeatureGate
 {
