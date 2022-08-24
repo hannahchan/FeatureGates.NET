@@ -3,7 +3,7 @@ namespace FeatureGates;
 /// <summary>The base class for all feature gates.</summary>
 public abstract class AbstractFeatureGate
 {
-    /// <summary>Initializes a new instance of the <see cref="AbstractFeatureGate"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="AbstractFeatureGate" /> class.</summary>
     /// <param name="featureGateKey">The user-defined identifier for the feature gate.</param>
     /// <param name="instrumentType">The instrument type that the feature gate will used to record executions.</param>
     /// <param name="fallbackOnException">Whether to execute the 'WhenClosed' operation when an uncaught exception is thrown during execution of the 'WhenOpened' operation.</param>

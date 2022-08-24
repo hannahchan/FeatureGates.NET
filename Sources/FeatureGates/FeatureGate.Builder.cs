@@ -3,7 +3,7 @@ namespace FeatureGates;
 using System;
 using System.Threading.Tasks;
 
-/// <content>Contains the <see cref="Builder"/> and related classes.</content>
+/// <content>Contains the <see cref="Builder" /> and related classes.</content>
 public partial class FeatureGate
 {
     /// <summary>A static entry point that can be used to create feature gates. Start by specifying a feature gate key and then by chaining methods.</summary>
@@ -76,7 +76,7 @@ public partial class FeatureGate
         /// <summary>Gets the predicate that controls whether to execute 'WhenOpened' or 'WhenClosed'.</summary>
         public Func<bool> ControlledBy { get; }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'true'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>true</c>.</summary>
         /// <param name="action">The operation expressed as an action.</param>
         /// <returns>A <see cref="HalfGate" /> for chaining.</returns>
         public HalfGate WhenOpened(Action? action)
@@ -84,7 +84,7 @@ public partial class FeatureGate
             return new HalfGate(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, action);
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'true'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>true</c>.</summary>
         /// <param name="function">The operation expressed as a function.</param>
         /// <typeparam name="TResult">The type of the result returned by the function.</typeparam>
         /// <returns>A <see cref="PartialResultGate{TResult}" /> for chaining.</returns>
@@ -93,7 +93,7 @@ public partial class FeatureGate
             return new PartialResultGate<TResult>(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, function);
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'true'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>true</c>.</summary>
         /// <param name="function">The operation expressed as an asynchronous action.</param>
         /// <returns>A <see cref="HalfGateAsync" /> for chaining.</returns>
         public HalfGateAsync WhenOpened(Func<Task> function)
@@ -101,7 +101,7 @@ public partial class FeatureGate
             return new HalfGateAsync(this.Key, this.InstrumentType, this.FallbackOnException, () => Task.Run(this.ControlledBy), function);
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'true'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>true</c>.</summary>
         /// <param name="function">The operation expressed as an asynchronous function.</param>
         /// <typeparam name="TResult">The type of the result returned by the asynchronous function.</typeparam>
         /// <returns>A <see cref="PartialResultGateAsync{TResult}" /> for chaining.</returns>
@@ -123,7 +123,7 @@ public partial class FeatureGate
         /// <summary>Gets the predicate that controls whether to execute 'WhenOpened' or 'WhenClosed'.</summary>
         public Func<Task<bool>> ControlledBy { get; }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'true'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>true</c>.</summary>
         /// <param name="function">The operation expressed as an asynchronous action.</param>
         /// <returns>A <see cref="HalfGateAsync" /> for chaining.</returns>
         public HalfGateAsync WhenOpened(Func<Task> function)
@@ -131,7 +131,7 @@ public partial class FeatureGate
             return new HalfGateAsync(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, function);
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'true'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>true</c>.</summary>
         /// <param name="function">The operation expressed as an asynchronous function.</param>
         /// <typeparam name="TResult">The type of the result returned by the asynchronous function.</typeparam>
         /// <returns>A <see cref="PartialResultGateAsync{TResult}" /> for chaining.</returns>
@@ -140,7 +140,7 @@ public partial class FeatureGate
             return new PartialResultGateAsync<TResult>(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, function);
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'true'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>true</c>.</summary>
         /// <param name="action">The operation expressed as an action.</param>
         /// <returns>A <see cref="HalfGateAsync" /> for chaining.</returns>
         public HalfGateAsync WhenOpened(Action action)
@@ -148,7 +148,7 @@ public partial class FeatureGate
             return this.WhenOpened(() => Task.Run(action));
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'true'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>true</c>.</summary>
         /// <param name="function">The operation expressed as a function.</param>
         /// <typeparam name="TResult">The type of the result returned by the function.</typeparam>
         /// <returns>A <see cref="PartialResultGateAsync{TResult}" /> for chaining.</returns>
@@ -166,7 +166,7 @@ public partial class FeatureGate
         {
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'false'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>false</c>.</summary>
         /// <param name="action">The operation expressed as an action.</param>
         /// <returns>A completed <see cref="FeatureGate" />.</returns>
         public new FeatureGate WhenClosed(Action? action)
@@ -180,7 +180,7 @@ public partial class FeatureGate
                 whenClosed: action);
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'false'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>false</c>.</summary>
         /// <param name="function">The operation expressed as an asynchronous action.</param>
         /// <returns>A completed <see cref="FeatureGateAsync" />.</returns>
         public new FeatureGateAsync WhenClosed(Func<Task>? function)
@@ -203,7 +203,7 @@ public partial class FeatureGate
         {
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'false'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>false</c>.</summary>
         /// <param name="function">The operation expressed as an asynchronous action.</param>
         /// <returns>A completed <see cref="FeatureGateAsync" />.</returns>
         public new FeatureGateAsync WhenClosed(Func<Task>? function)
@@ -217,7 +217,7 @@ public partial class FeatureGate
                 whenClosed: function);
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'false'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>false</c>.</summary>
         /// <param name="action">The operation expressed as an action.</param>
         /// <returns>A completed <see cref="FeatureGateAsync" />.</returns>
         public new FeatureGateAsync WhenClosed(Action? action)
@@ -246,10 +246,10 @@ public partial class FeatureGate
         /// <summary>Gets the predicate that controls whether to execute 'WhenOpened' or 'WhenClosed'.</summary>
         public Func<bool> ControlledBy { get; }
 
-        /// <summary>Gets the operation to execute when 'ControlledBy' evaluates to 'true'.</summary>
+        /// <summary>Gets the operation to execute when 'ControlledBy' evaluates to <c>true</c>.</summary>
         public Func<TResult> WhenOpened { get; }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'false'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>false</c>.</summary>
         /// <param name="function">The operation expressed as a function.</param>
         /// <returns>A completed <see cref="FeatureGate{TResult}" />.</returns>
         public FeatureGate<TResult> WhenClosed(Func<TResult> function)
@@ -263,7 +263,7 @@ public partial class FeatureGate
                 whenClosed: function);
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'false'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>false</c>.</summary>
         /// <param name="function">The operation expressed as an asynchronous function.</param>
         /// <returns>A completed <see cref="FeatureGateAsync{TResult}" />.</returns>
         public FeatureGateAsync<TResult> WhenClosed(Func<Task<TResult>> function)
@@ -292,10 +292,10 @@ public partial class FeatureGate
         /// <summary>Gets the predicate that controls whether to execute 'WhenOpened' or 'WhenClosed'.</summary>
         public Func<Task<bool>> ControlledBy { get; }
 
-        /// <summary>Gets the operation to execute when 'ControlledBy' evaluates to 'true'.</summary>
+        /// <summary>Gets the operation to execute when 'ControlledBy' evaluates to <c>true</c>.</summary>
         public Func<Task<TResult>> WhenOpened { get; }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'false'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>false</c>.</summary>
         /// <param name="function">The operation expressed as an asynchronous function.</param>
         /// <returns>A completed <see cref="FeatureGateAsync{TResult}" />.</returns>
         public FeatureGateAsync<TResult> WhenClosed(Func<Task<TResult>> function)
@@ -309,7 +309,7 @@ public partial class FeatureGate
                 whenClosed: function);
         }
 
-        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to 'false'.</summary>
+        /// <summary>Sets the operation to execute when 'ControlledBy' evaluates to <c>false</c>.</summary>
         /// <param name="function">The operation expressed as a function.</param>
         /// <returns>A completed <see cref="FeatureGateAsync{TResult}" />.</returns>
         public FeatureGateAsync<TResult> WhenClosed(Func<TResult> function)
