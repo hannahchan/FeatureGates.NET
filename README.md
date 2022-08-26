@@ -77,7 +77,7 @@ By default, feature gates are configured to record executions using a counter. I
 
 ### Fallback on Exception
 
-A feature gate can be configured to execute its `WhenClosed` operation when an uncaught exception is thrown during execution of its `WhenOpened` operation. This behavior is not enabled by default and can be enabled during construction of your feature gate.
+A feature gate can be configured to execute its `WhenClosed` delegate when an uncaught exception is thrown during execution of its `WhenOpened` delegate. This behavior is not enabled by default and can be enabled during construction of your feature gate.
 
 ## Metrics
 

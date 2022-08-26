@@ -17,7 +17,7 @@ public class FeatureGateBuilder
     /// <summary>Gets the instrument type that the feature gate will used to record executions.</summary>
     public InstrumentType InstrumentType { get; private set; } = InstrumentType.Counter;
 
-    /// <summary>Gets a value indicating whether to execute the 'WhenClosed' operation when an uncaught exception is thrown during execution of the 'WhenOpened' operation.</summary>
+    /// <summary>Gets a value indicating whether to execute the 'WhenClosed' delegate when an uncaught exception is thrown during execution of the 'WhenOpened' delegate.</summary>
     public bool FallbackOnException { get; private set; }
 
     /// <summary>Configures the feature gate to use a histogram to record executions.</summary>
@@ -28,7 +28,7 @@ public class FeatureGateBuilder
         return this;
     }
 
-    /// <summary>Configures the feature gate to execute its 'WhenClosed' operation when an uncaught exception is thrown during execution of its 'WhenOpened' operation.</summary>
+    /// <summary>Configures the feature gate to execute its 'WhenClosed' delegate when an uncaught exception is thrown during execution of its 'WhenOpened' delegate.</summary>
     /// <returns>The <see cref="FeatureGateBuilder" /> for chaining.</returns>
     public FeatureGateBuilder WithFallbackOnException()
     {

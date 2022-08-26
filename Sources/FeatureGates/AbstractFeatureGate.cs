@@ -6,7 +6,7 @@ public abstract class AbstractFeatureGate
     /// <summary>Initializes a new instance of the <see cref="AbstractFeatureGate" /> class.</summary>
     /// <param name="featureGateKey">The user-defined identifier for the feature gate.</param>
     /// <param name="instrumentType">The instrument type that the feature gate will used to record executions.</param>
-    /// <param name="fallbackOnException">Whether to execute the 'WhenClosed' operation when an uncaught exception is thrown during execution of the 'WhenOpened' operation.</param>
+    /// <param name="fallbackOnException">Whether to execute the 'WhenClosed' delegate when an uncaught exception is thrown during execution of the 'WhenOpened' delegate.</param>
     protected AbstractFeatureGate(string featureGateKey, InstrumentType instrumentType, bool fallbackOnException)
     {
         this.Key = featureGateKey;
@@ -20,6 +20,6 @@ public abstract class AbstractFeatureGate
     /// <summary>Gets the instrument type that the feature gate will used to record executions.</summary>
     public InstrumentType InstrumentType { get; }
 
-    /// <summary>Gets a value indicating whether to execute the 'WhenClosed' operation when an uncaught exception is thrown during execution of the 'WhenOpened' operation.</summary>
+    /// <summary>Gets a value indicating whether to execute the 'WhenClosed' delegate when an uncaught exception is thrown during execution of the 'WhenOpened' delegate.</summary>
     public bool FallbackOnException { get; }
 }

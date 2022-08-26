@@ -10,8 +10,8 @@ public class FeatureGateAsync<TResult> : AbstractFeatureGate
     /// <summary>Initializes a new instance of the <see cref="FeatureGateAsync{TResult}" /> class.</summary>
     /// <param name="featureGateKey">The user-defined identifier for the feature gate.</param>
     /// <param name="controlledBy">The predicate that controls whether to execute <see cref="WhenOpened" /> or <see cref="WhenClosed" />.</param>
-    /// <param name="whenOpened">The operation to execute when <see cref="ControlledBy" /> evaluates to <c>true</c>.</param>
-    /// <param name="whenClosed">The operation to execute when <see cref="ControlledBy" /> evaluates to <c>false</c>.</param>
+    /// <param name="whenOpened">The delegate to execute when <see cref="ControlledBy" /> evaluates to <c>true</c>.</param>
+    /// <param name="whenClosed">The delegate to execute when <see cref="ControlledBy" /> evaluates to <c>false</c>.</param>
     public FeatureGateAsync(string featureGateKey, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened, Func<Task<TResult>> whenClosed)
         : this(featureGateKey, InstrumentType.Counter, false, controlledBy, whenOpened, whenClosed)
     {
@@ -20,10 +20,10 @@ public class FeatureGateAsync<TResult> : AbstractFeatureGate
     /// <summary>Initializes a new instance of the <see cref="FeatureGateAsync{TResult}" /> class.</summary>
     /// <param name="featureGateKey">The user-defined identifier for the feature gate.</param>
     /// <param name="instrumentType">The instrument type that the feature gate will used to record executions.</param>
-    /// <param name="fallbackOnException">Whether to execute the <see cref="WhenClosed" /> operation when an uncaught exception is thrown during execution of the <see cref="WhenOpened" /> operation.</param>
+    /// <param name="fallbackOnException">Whether to execute the <see cref="WhenClosed" /> delegate when an uncaught exception is thrown during execution of the <see cref="WhenOpened" /> delegate.</param>
     /// <param name="controlledBy">The predicate that controls whether to execute <see cref="WhenOpened" /> or <see cref="WhenClosed" />.</param>
-    /// <param name="whenOpened">The operation to execute when <see cref="ControlledBy" /> evaluates to <c>true</c>.</param>
-    /// <param name="whenClosed">The operation to execute when <see cref="ControlledBy" /> evaluates to <c>false</c>.</param>
+    /// <param name="whenOpened">The delegate to execute when <see cref="ControlledBy" /> evaluates to <c>true</c>.</param>
+    /// <param name="whenClosed">The delegate to execute when <see cref="ControlledBy" /> evaluates to <c>false</c>.</param>
     public FeatureGateAsync(string featureGateKey, InstrumentType instrumentType, bool fallbackOnException, Func<Task<bool>> controlledBy, Func<Task<TResult>> whenOpened, Func<Task<TResult>> whenClosed)
         : base(featureGateKey, instrumentType, fallbackOnException)
     {
@@ -35,14 +35,14 @@ public class FeatureGateAsync<TResult> : AbstractFeatureGate
     /// <summary>Gets the predicate that controls whether to execute <see cref="WhenOpened" /> or <see cref="WhenClosed" />.</summary>
     public Func<Task<bool>> ControlledBy { get; }
 
-    /// <summary>Gets the operation to execute when <see cref="ControlledBy" /> evaluates to <c>true</c>.</summary>
+    /// <summary>Gets the delegate to execute when <see cref="ControlledBy" /> evaluates to <c>true</c>.</summary>
     public Func<Task<TResult>> WhenOpened { get; }
 
-    /// <summary>Gets the operation to execute when <see cref="ControlledBy" /> evaluates to <c>false</c>.</summary>
+    /// <summary>Gets the delegate to execute when <see cref="ControlledBy" /> evaluates to <c>false</c>.</summary>
     public Func<Task<TResult>> WhenClosed { get; }
 
     /// <summary>Invokes the feature gate and records the execution.</summary>
-    /// <returns>The task object representing the asynchronous operation with a TResult value.</returns>
+    /// <returns>The task object representing the asynchronous delegate with a TResult value.</returns>
     public async Task<TResult> InvokeAsync()
     {
         return await InternalFeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);
