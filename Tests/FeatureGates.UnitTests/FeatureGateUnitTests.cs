@@ -1,5 +1,7 @@
 namespace FeatureGates.UnitTests;
 
+using System;
+using FeatureGates.Builder;
 using FeatureGates.UnitTests.Helpers;
 using Xunit;
 
@@ -61,5 +63,18 @@ public class FeatureGateUnitTests
         Assert.Equal(expected, result);
         Assert.Single(activityListener.Activities);
         Assert.Empty(meterListener.Measurements);
+    }
+
+    [Fact]
+    public void When_InvokingStaticMethodWithKey_Expect_FeatureGateBuilder()
+    {
+        // Arrange
+        string featureGateKey = Guid.NewGuid().ToString();
+
+        // Act
+        FeatureGateBuilder builder = FeatureGate.WithKey(featureGateKey);
+
+        // Assert
+        Assert.Equal(featureGateKey, builder.Key);
     }
 }

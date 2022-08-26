@@ -54,7 +54,7 @@ Feature gate executions are recorded every time a feature gate is invoked. A fea
 
 ### Construction
 
-The easiest way to create a feature gate is to call the static method `FeatureGate.WithKey("MyFeatureGateKey")` which will return a `FeatureGate` builder. The `FeatureGate` builder will allow you to chain methods to help you correctly create the type of feature gate you need.
+The easiest way to create a feature gate is to call the static method `FeatureGate.WithKey("MyFeatureGateKey")` which will return a `FeatureGateBuilder`. The `FeatureGateBuilder` will allow you to chain methods to help you correctly create the type of feature gate you need.
 
 Alternatively you can instantiate the type of feature gate you need by calling its constructor. There are only four types;
 

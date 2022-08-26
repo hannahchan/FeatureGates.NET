@@ -1,9 +1,10 @@
 namespace FeatureGates;
 
 using System;
+using FeatureGates.Builder;
 
 /// <summary>Represents an instrumented feature gate.</summary>
-public partial class FeatureGate : AbstractFeatureGate
+public class FeatureGate : AbstractFeatureGate
 {
     /// <summary>Initializes a new instance of the <see cref="FeatureGate" /> class.</summary>
     /// <param name="featureGateKey">The user-defined identifier for the feature gate.</param>
@@ -38,6 +39,14 @@ public partial class FeatureGate : AbstractFeatureGate
 
     /// <summary>Gets the operation to execute when <see cref="ControlledBy" /> evaluates to <c>false</c>.</summary>
     public Action? WhenClosed { get; }
+
+    /// <summary>A static entry point that can be used to create feature gates. Start by specifying a feature gate key and then by chaining the next available methods.</summary>
+    /// <param name="featureGateKey">The user-defined identifier for the feature gate.</param>
+    /// <returns>A <see cref="FeatureGateBuilder" /> for chaining.</returns>
+    public static FeatureGateBuilder WithKey(string featureGateKey)
+    {
+        return new FeatureGateBuilder(featureGateKey);
+    }
 
     /// <summary>Invokes the feature gate and records the execution.</summary>
     public void Invoke()
