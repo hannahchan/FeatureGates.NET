@@ -42,7 +42,7 @@ public class FeatureGateAsync<TResult> : AbstractFeatureGate
     public Func<Task<TResult>> WhenClosed { get; }
 
     /// <summary>Invokes the feature gate and records the execution.</summary>
-    /// <returns>The task object representing the asynchronous delegate with a TResult value.</returns>
+    /// <returns>The <typeparamref name="TResult" /> value wrapped in a task object representing the asynchronous execution.</returns>
     public async Task<TResult> InvokeAsync()
     {
         return await InternalFeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);

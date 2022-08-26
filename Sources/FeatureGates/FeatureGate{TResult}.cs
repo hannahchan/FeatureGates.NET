@@ -41,7 +41,7 @@ public class FeatureGate<TResult> : AbstractFeatureGate
     public Func<TResult> WhenClosed { get; }
 
     /// <summary>Invokes the feature gate and records the execution.</summary>
-    /// <returns>The TResult value returned from the end of execution.</returns>
+    /// <returns>The <typeparamref name="TResult" /> value returned from the end of execution.</returns>
     public TResult Invoke()
     {
         return InternalFeatureGate.Invoke(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);
