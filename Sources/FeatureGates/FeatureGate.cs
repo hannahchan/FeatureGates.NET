@@ -51,6 +51,6 @@ public class FeatureGate : AbstractFeatureGate
     /// <summary>Invokes the feature gate and records the execution.</summary>
     public void Invoke()
     {
-        InternalFeatureGate.Invoke(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);
+        StaticFeatureGate.Invoke(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);
     }
 }

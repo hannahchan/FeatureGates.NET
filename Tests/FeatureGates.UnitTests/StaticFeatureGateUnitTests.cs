@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 
-public class InternalFeatureGateUnitTests
+public class StaticFeatureGateUnitTests
 {
     public class Invoke
     {
@@ -21,7 +21,7 @@ public class InternalFeatureGateUnitTests
             void WhenClosed() => result = "Feature gate closed.";
 
             // Act
-            InternalFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+            StaticFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
 
             // Assert
             Assert.Equal(expected, result);
@@ -38,7 +38,7 @@ public class InternalFeatureGateUnitTests
             void WhenClosed() => result = "Feature gate closed.";
 
             // Act
-            InternalFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+            StaticFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
 
             // Assert
             Assert.Equal("Feature gate closed.", result);
@@ -55,7 +55,7 @@ public class InternalFeatureGateUnitTests
             void WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
 
             // Act
-            Exception exception = Record.Exception(() => InternalFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+            Exception exception = Record.Exception(() => StaticFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
 
             // Assert
             Assert.IsType<InvalidOperationException>(exception);
@@ -76,7 +76,7 @@ public class InternalFeatureGateUnitTests
             string WhenClosed() => "Feature gate closed.";
 
             // Act
-            string result = InternalFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+            string result = StaticFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
 
             // Assert
             Assert.Equal(expected, result);
@@ -91,7 +91,7 @@ public class InternalFeatureGateUnitTests
             string WhenClosed() => "Feature gate closed.";
 
             // Act
-            string result = InternalFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+            string result = StaticFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
 
             // Assert
             Assert.Equal("Feature gate closed.", result);
@@ -108,7 +108,7 @@ public class InternalFeatureGateUnitTests
             string WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
 
             // Act
-            Exception exception = Record.Exception(() => InternalFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+            Exception exception = Record.Exception(() => StaticFeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
 
             // Assert
             Assert.IsType<InvalidOperationException>(exception);
@@ -131,7 +131,7 @@ public class InternalFeatureGateUnitTests
             Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
 
             // Act
-            await InternalFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+            await StaticFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
 
             // Assert
             Assert.Equal(expected, result);
@@ -148,7 +148,7 @@ public class InternalFeatureGateUnitTests
             Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
 
             // Act
-            await InternalFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+            await StaticFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
 
             // Assert
             Assert.Equal("Feature gate closed.", result);
@@ -165,7 +165,7 @@ public class InternalFeatureGateUnitTests
             Task WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
 
             // Act
-            Exception exception = await Record.ExceptionAsync(() => InternalFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+            Exception exception = await Record.ExceptionAsync(() => StaticFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
 
             // Assert
             Assert.IsType<InvalidOperationException>(exception);
@@ -186,7 +186,7 @@ public class InternalFeatureGateUnitTests
             Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
 
             // Act
-            string result = await InternalFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+            string result = await StaticFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
 
             // Assert
             Assert.Equal(expected, result);
@@ -201,7 +201,7 @@ public class InternalFeatureGateUnitTests
             Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
 
             // Act
-            string result = await InternalFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+            string result = await StaticFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
 
             // Assert
             Assert.Equal("Feature gate closed.", result);
@@ -218,7 +218,7 @@ public class InternalFeatureGateUnitTests
             Task<string> WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
 
             // Act
-            Exception exception = await Record.ExceptionAsync(() => InternalFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+            Exception exception = await Record.ExceptionAsync(() => StaticFeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
 
             // Assert
             Assert.IsType<InvalidOperationException>(exception);
