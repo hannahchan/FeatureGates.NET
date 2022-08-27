@@ -44,6 +44,6 @@ public class FeatureGate<TResult> : AbstractFeatureGate
     /// <returns>The <typeparamref name="TResult" /> value returned from the end of execution.</returns>
     public TResult Invoke()
     {
-        return StaticFeatureGate.Invoke(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);
+        return Static.FeatureGate.Invoke(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);
     }
 }

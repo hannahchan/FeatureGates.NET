@@ -44,6 +44,6 @@ public class FeatureGateAsync : AbstractFeatureGate
     /// <returns>The task object representing the asynchronous execution.</returns>
     public async Task InvokeAsync()
     {
-        await StaticFeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);
+        await Static.FeatureGate.InvokeAsync(this.Key, this.InstrumentType, this.FallbackOnException, this.ControlledBy, this.WhenOpened, this.WhenClosed);
     }
 }

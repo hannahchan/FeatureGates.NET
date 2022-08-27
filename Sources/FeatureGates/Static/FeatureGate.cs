@@ -1,11 +1,11 @@
-namespace FeatureGates;
+namespace FeatureGates.Static;
 
 using System;
 using System.Threading.Tasks;
 using FeatureGates.Internal;
 
 /// <summary>Intended for high-performance or memory-intensive scenarios, the static feature gate removes the need to <c>new</c> up feature gate instances by providing static methods that perform the same functionality.</summary>
-internal static class StaticFeatureGate
+internal static class FeatureGate
 {
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
     /// <param name="featureGateKey">The user-defined identifier for the feature gate.</param>
