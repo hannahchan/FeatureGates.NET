@@ -1,8 +1,10 @@
 namespace FeatureGates.UnitTests.Static;
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using FeatureGates.Static;
+using FeatureGates.UnitTests.Helpers;
 using Xunit;
 
 public class FeatureGateUnitTests
@@ -224,6 +226,278 @@ public class FeatureGateUnitTests
             // Assert
             Assert.IsType<InvalidOperationException>(exception);
             Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+        }
+    }
+
+    public class RecordExecution
+    {
+        [Fact]
+        public void When_RecordingExecution_Expected_Recorded()
+        {
+            // Arrange
+            using SpyActivityListener activityListener = new SpyActivityListener();
+            using SpyMeterListener meterListener = new SpyMeterListener();
+
+            string result = string.Empty;
+            void Action() => result = "Action executed!";
+
+            // Act
+            AlwaysOpenedGate.RecordExecution(
+                featureGateKey: "myFeatureGateKey",
+                instrumentType: InstrumentType.Counter,
+                action: Action);
+
+            // Assert
+            Assert.Equal("Action executed!", result);
+
+            Assert.Collection(
+                activityListener.Activities,
+                activity =>
+                {
+                    Assert.Equal("feature.gate.execution", activity.OperationName);
+
+                    Assert.Collection(
+                        activity.Tags,
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.key", tag.Key);
+                            Assert.Equal("myFeatureGateKey", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.state", tag.Key);
+                            Assert.Equal("opened", tag.Value);
+                        });
+
+                    Assert.Equal(ActivityStatusCode.Ok, activity.Status);
+                    Assert.Null(activity.StatusDescription);
+                });
+
+            Assert.Collection(
+                meterListener.Measurements,
+                measurement =>
+                {
+                    Assert.Equal(1, Assert.IsType<long>(measurement.Value));
+
+                    Assert.Collection(
+                        measurement.Tags,
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.key", tag.Key);
+                            Assert.Equal("myFeatureGateKey", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.state", tag.Key);
+                            Assert.Equal("opened", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.exception", tag.Key);
+                            Assert.Equal("false", tag.Value);
+                        });
+                });
+        }
+
+        [Fact]
+        public void When_RecordingExecutionReturningResult_Expected_Recorded()
+        {
+            // Arrange
+            using SpyActivityListener activityListener = new SpyActivityListener();
+            using SpyMeterListener meterListener = new SpyMeterListener();
+
+            // Act
+            string result = AlwaysOpenedGate.RecordExecution(
+                featureGateKey: "myFeatureGateKey",
+                instrumentType: InstrumentType.Counter,
+                function: () => "Function executed!");
+
+            // Assert
+            Assert.Equal("Function executed!", result);
+
+            Assert.Collection(
+                activityListener.Activities,
+                activity =>
+                {
+                    Assert.Equal("feature.gate.execution", activity.OperationName);
+
+                    Assert.Collection(
+                        activity.Tags,
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.key", tag.Key);
+                            Assert.Equal("myFeatureGateKey", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.state", tag.Key);
+                            Assert.Equal("opened", tag.Value);
+                        });
+
+                    Assert.Equal(ActivityStatusCode.Ok, activity.Status);
+                    Assert.Null(activity.StatusDescription);
+                });
+
+            Assert.Collection(
+                meterListener.Measurements,
+                measurement =>
+                {
+                    Assert.Equal(1, Assert.IsType<long>(measurement.Value));
+
+                    Assert.Collection(
+                        measurement.Tags,
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.key", tag.Key);
+                            Assert.Equal("myFeatureGateKey", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.state", tag.Key);
+                            Assert.Equal("opened", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.exception", tag.Key);
+                            Assert.Equal("false", tag.Value);
+                        });
+                });
+        }
+    }
+
+    public class RecordExecutionAsync
+    {
+        [Fact]
+        public async Task When_RecordingExecution_Expected_Recorded()
+        {
+            // Arrange
+            using SpyActivityListener activityListener = new SpyActivityListener();
+            using SpyMeterListener meterListener = new SpyMeterListener();
+
+            string result = string.Empty;
+            Task Function() => Task.Run(() => result = "Function executed!");
+
+            // Act
+            await AlwaysOpenedGate.RecordExecutionAsync(
+                featureGateKey: "myFeatureGateKey",
+                instrumentType: InstrumentType.Counter,
+                function: Function);
+
+            // Assert
+            Assert.Equal("Function executed!", result);
+
+            Assert.Collection(
+                activityListener.Activities,
+                activity =>
+                {
+                    Assert.Equal("feature.gate.execution", activity.OperationName);
+
+                    Assert.Collection(
+                        activity.Tags,
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.key", tag.Key);
+                            Assert.Equal("myFeatureGateKey", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.state", tag.Key);
+                            Assert.Equal("opened", tag.Value);
+                        });
+
+                    Assert.Equal(ActivityStatusCode.Ok, activity.Status);
+                    Assert.Null(activity.StatusDescription);
+                });
+
+            Assert.Collection(
+                meterListener.Measurements,
+                measurement =>
+                {
+                    Assert.Equal(1, Assert.IsType<long>(measurement.Value));
+
+                    Assert.Collection(
+                        measurement.Tags,
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.key", tag.Key);
+                            Assert.Equal("myFeatureGateKey", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.state", tag.Key);
+                            Assert.Equal("opened", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.exception", tag.Key);
+                            Assert.Equal("false", tag.Value);
+                        });
+                });
+        }
+
+        [Fact]
+        public async Task When_RecordingExecutionReturningResult_Expected_Recorded()
+        {
+            // Arrange
+            using SpyActivityListener activityListener = new SpyActivityListener();
+            using SpyMeterListener meterListener = new SpyMeterListener();
+
+            // Act
+            string result = await AlwaysOpenedGate.RecordExecutionAsync(
+                featureGateKey: "myFeatureGateKey",
+                instrumentType: InstrumentType.Counter,
+                function: () => Task.FromResult("Function executed!"));
+
+            // Assert
+            Assert.Equal("Function executed!", result);
+
+            Assert.Collection(
+                activityListener.Activities,
+                activity =>
+                {
+                    Assert.Equal("feature.gate.execution", activity.OperationName);
+
+                    Assert.Collection(
+                        activity.Tags,
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.key", tag.Key);
+                            Assert.Equal("myFeatureGateKey", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.state", tag.Key);
+                            Assert.Equal("opened", tag.Value);
+                        });
+
+                    Assert.Equal(ActivityStatusCode.Ok, activity.Status);
+                    Assert.Null(activity.StatusDescription);
+                });
+
+            Assert.Collection(
+                meterListener.Measurements,
+                measurement =>
+                {
+                    Assert.Equal(1, Assert.IsType<long>(measurement.Value));
+
+                    Assert.Collection(
+                        measurement.Tags,
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.key", tag.Key);
+                            Assert.Equal("myFeatureGateKey", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.state", tag.Key);
+                            Assert.Equal("opened", tag.Value);
+                        },
+                        tag =>
+                        {
+                            Assert.Equal("feature.gate.exception", tag.Key);
+                            Assert.Equal("false", tag.Value);
+                        });
+                });
         }
     }
 }
