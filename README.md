@@ -79,6 +79,16 @@ By default, feature gates are configured to record executions using a counter. I
 
 A feature gate can be configured to execute its `WhenClosed` delegate when an uncaught exception is thrown during execution of its `WhenOpened` delegate. This behavior is not enabled by default and can be enabled during construction of your feature gate.
 
+### The Static Feature Gate
+
+An alternative `FeatureGate` class has been provided in the child namespace `FeatureGates.Static` and is intended to be used for high-performance or memory-intensive scenarios. This alternative class is static and removes the need to `new` up feature gate instances by providing static methods that perform the same functionality found in the non-static versions.
+
+Invoke this functionality by calling one of the `Invoke()` or `InvokeAsync()` methods on the static `FeatureGate` with all the required parameters.
+
+### Tidying Up
+
+Feature gates are typically removed from code after a successful rollout of a feature. In the event you want to continue to record executions after the removal, you can replace your feature gate with a call to the `RecordExecution()` or `RecordExecutionAsync()` methods on the static `FeatureGate`. These methods immediately execute your code and records its execution as an `opened` feature gate execution.
+
 ## Metrics
 
 > **Warning** - Metric names are currently unstable.

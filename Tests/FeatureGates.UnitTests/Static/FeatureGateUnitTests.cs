@@ -242,7 +242,7 @@ public class FeatureGateUnitTests
             void Action() => result = "Action executed!";
 
             // Act
-            AlwaysOpenedGate.RecordExecution(
+            FeatureGate.RecordExecution(
                 featureGateKey: "myFeatureGateKey",
                 instrumentType: InstrumentType.Counter,
                 action: Action);
@@ -307,7 +307,7 @@ public class FeatureGateUnitTests
             using SpyMeterListener meterListener = new SpyMeterListener();
 
             // Act
-            string result = AlwaysOpenedGate.RecordExecution(
+            string result = FeatureGate.RecordExecution(
                 featureGateKey: "myFeatureGateKey",
                 instrumentType: InstrumentType.Counter,
                 function: () => "Function executed!");
@@ -378,7 +378,7 @@ public class FeatureGateUnitTests
             Task Function() => Task.Run(() => result = "Function executed!");
 
             // Act
-            await AlwaysOpenedGate.RecordExecutionAsync(
+            await FeatureGate.RecordExecutionAsync(
                 featureGateKey: "myFeatureGateKey",
                 instrumentType: InstrumentType.Counter,
                 function: Function);
@@ -443,7 +443,7 @@ public class FeatureGateUnitTests
             using SpyMeterListener meterListener = new SpyMeterListener();
 
             // Act
-            string result = await AlwaysOpenedGate.RecordExecutionAsync(
+            string result = await FeatureGate.RecordExecutionAsync(
                 featureGateKey: "myFeatureGateKey",
                 instrumentType: InstrumentType.Counter,
                 function: () => Task.FromResult("Function executed!"));
