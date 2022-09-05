@@ -9,223 +9,859 @@ using Xunit;
 
 public class FeatureGateUnitTests
 {
-    public class Invoke
+    public class InvokeCore
     {
-        [Theory]
-        [InlineData(true, "Feature gate opened!")]
-        [InlineData(false, "Feature gate closed.")]
-        public void When_Invoked_Expect_Invoked(bool isOpened, string expected)
+        public class Invoke
         {
-            // Arrange
-            string result = string.Empty;
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public void When_Invoked_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                string result = string.Empty;
 
-            bool ControlledBy() => isOpened;
-            void WhenOpened() => result = "Feature gate opened!";
-            void WhenClosed() => result = "Feature gate closed.";
+                bool ControlledBy() => isOpened;
+                void WhenOpened() => result = "Feature gate opened!";
+                void WhenClosed() => result = "Feature gate closed.";
 
-            // Act
-            FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+                // Act
+                FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
 
-            // Assert
-            Assert.Equal(expected, result);
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public void When_InvokedWithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                string result = string.Empty;
+
+                bool ControlledBy() => true;
+                void WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                void WhenClosed() => result = "Feature gate closed.";
+
+                // Act
+                FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public void When_InvokedWithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                void WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                void WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = Record.Exception(() => FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
         }
 
-        [Fact]
-        public void When_InvokedWithFallback_Expect_WhenClosedInvoked()
+        public class InvokeTResult
         {
-            // Arrange
-            string result = string.Empty;
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public void When_Invoked_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                bool ControlledBy() => isOpened;
+                string WhenOpened() => "Feature gate opened!";
+                string WhenClosed() => "Feature gate closed.";
 
-            bool ControlledBy() => true;
-            void WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
-            void WhenClosed() => result = "Feature gate closed.";
+                // Act
+                string result = FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
 
-            // Act
-            FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+                // Assert
+                Assert.Equal(expected, result);
+            }
 
-            // Assert
-            Assert.Equal("Feature gate closed.", result);
+            [Fact]
+            public void When_InvokedWithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                string WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                string WhenClosed() => "Feature gate closed.";
+
+                // Act
+                string result = FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public void When_InvokedWithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                string WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                string WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = Record.Exception(() => FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void When_InvokedWithFallback_Expect_Exception(bool fallbackOnException)
+        public class InvokeAsync
         {
-            // Arrange
-            bool ControlledBy() => true;
-            void WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
-            void WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                string result = string.Empty;
 
-            // Act
-            Exception exception = Record.Exception(() => FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+                Task<bool> ControlledBy() => Task.FromResult(isOpened);
+                Task WhenOpened() => Task.Run(() => result = "Feature gate opened!");
+                Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
 
-            // Assert
-            Assert.IsType<InvalidOperationException>(exception);
-            Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsyncWithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                string result = string.Empty;
+
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                Task WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsyncWithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                Task WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
+        }
+
+        public class InvokeAsyncTResult
+        {
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(isOpened);
+                Task<string> WhenOpened() => Task.FromResult("Feature gate opened!");
+                Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
+
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsyncWithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                Task<string> WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
+
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsyncWithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                Task<string> WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task<string> WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
         }
     }
 
-    public class InvokeTResult
+    public class InvokePermutations
     {
-        [Theory]
-        [InlineData(true, "Feature gate opened!")]
-        [InlineData(false, "Feature gate closed.")]
-        public void When_Invoked_Expect_Invoked(bool isOpened, string expected)
+        public class InvokeAsync
         {
-            // Arrange
-            bool ControlledBy() => isOpened;
-            string WhenOpened() => "Feature gate opened!";
-            string WhenClosed() => "Feature gate closed.";
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync1_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                string result = string.Empty;
 
-            // Act
-            string result = FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+                Task<bool> ControlledBy() => Task.FromResult(isOpened);
+                void WhenOpened() => result = "Feature gate opened!";
+                void WhenClosed() => result = "Feature gate closed.";
 
-            // Assert
-            Assert.Equal(expected, result);
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsync1WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                string result = string.Empty;
+
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                void WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                void WhenClosed() => result = "Feature gate closed.";
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync1WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                void WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                void WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
+
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync2_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                string result = string.Empty;
+
+                bool ControlledBy() => isOpened;
+                Task WhenOpened() => Task.Run(() => result = "Feature gate opened!");
+                void WhenClosed() => result = "Feature gate closed.";
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsync2WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                string result = string.Empty;
+
+                bool ControlledBy() => true;
+                Task WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                void WhenClosed() => result = "Feature gate closed.";
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync2WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                Task WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                void WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
+
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync3_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                string result = string.Empty;
+
+                bool ControlledBy() => isOpened;
+                void WhenOpened() => result = "Feature gate opened!";
+                Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsync3WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                string result = string.Empty;
+
+                bool ControlledBy() => true;
+                void WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync3WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                void WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
+
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync4_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                string result = string.Empty;
+
+                bool ControlledBy() => isOpened;
+                Task WhenOpened() => Task.Run(() => result = "Feature gate opened!");
+                Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsync4WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                string result = string.Empty;
+
+                bool ControlledBy() => true;
+                Task WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync4WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                Task WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
+
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync5_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                string result = string.Empty;
+
+                Task<bool> ControlledBy() => Task.FromResult(isOpened);
+                void WhenOpened() => result = "Feature gate opened!";
+                Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsync5WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                string result = string.Empty;
+
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                void WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync5WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                void WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
+
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync6_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                string result = string.Empty;
+
+                Task<bool> ControlledBy() => Task.FromResult(isOpened);
+                Task WhenOpened() => Task.Run(() => result = "Feature gate opened!");
+                void WhenClosed() => result = "Feature gate closed.";
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsync6WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                string result = string.Empty;
+
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                Task WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                void WhenClosed() => result = "Feature gate closed.";
+
+                // Act
+                await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync6WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                Task WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                void WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
         }
 
-        [Fact]
-        public void When_InvokedWithFallback_Expect_WhenClosedInvoked()
+        public class InvokeAsyncTResult
         {
-            // Arrange
-            bool ControlledBy() => true;
-            string WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
-            string WhenClosed() => "Feature gate closed.";
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync1_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(isOpened);
+                string WhenOpened() => "Feature gate opened!";
+                string WhenClosed() => "Feature gate closed.";
 
-            // Act
-            string result = FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
 
-            // Assert
-            Assert.Equal("Feature gate closed.", result);
-        }
+                // Assert
+                Assert.Equal(expected, result);
+            }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void When_InvokedWithFallback_Expect_Exception(bool fallbackOnException)
-        {
-            // Arrange
-            bool ControlledBy() => true;
-            string WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
-            string WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+            [Fact]
+            public async Task When_InvokedAsync1WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                string WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                string WhenClosed() => "Feature gate closed.";
 
-            // Act
-            Exception exception = Record.Exception(() => FeatureGate.Invoke("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
 
-            // Assert
-            Assert.IsType<InvalidOperationException>(exception);
-            Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
-        }
-    }
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
 
-    public class InvokeAsync
-    {
-        [Theory]
-        [InlineData(true, "Feature gate opened!")]
-        [InlineData(false, "Feature gate closed.")]
-        public async Task When_InvokedAsync_Expect_Invoked(bool isOpened, string expected)
-        {
-            // Arrange
-            string result = string.Empty;
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync1WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                string WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                string WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
 
-            Task<bool> ControlledBy() => Task.FromResult(isOpened);
-            Task WhenOpened() => Task.Run(() => result = "Feature gate opened!");
-            Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
 
-            // Act
-            await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
 
-            // Assert
-            Assert.Equal(expected, result);
-        }
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync2_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                bool ControlledBy() => isOpened;
+                Task<string> WhenOpened() => Task.FromResult("Feature gate opened!");
+                string WhenClosed() => "Feature gate closed.";
 
-        [Fact]
-        public async Task When_InvokedAsyncWithFallback_Expect_WhenClosedInvoked()
-        {
-            // Arrange
-            string result = string.Empty;
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
 
-            Task<bool> ControlledBy() => Task.FromResult(true);
-            Task WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
-            Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+                // Assert
+                Assert.Equal(expected, result);
+            }
 
-            // Act
-            await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+            [Fact]
+            public async Task When_InvokedAsync2WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                Task<string> WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                string WhenClosed() => "Feature gate closed.";
 
-            // Assert
-            Assert.Equal("Feature gate closed.", result);
-        }
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task When_InvokedAsyncWithFallback_Expect_Exception(bool fallbackOnException)
-        {
-            // Arrange
-            Task<bool> ControlledBy() => Task.FromResult(true);
-            Task WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
-            Task WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
 
-            // Act
-            Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync2WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                Task<string> WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                string WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
 
-            // Assert
-            Assert.IsType<InvalidOperationException>(exception);
-            Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
-        }
-    }
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
 
-    public class InvokeAsyncTResult
-    {
-        [Theory]
-        [InlineData(true, "Feature gate opened!")]
-        [InlineData(false, "Feature gate closed.")]
-        public async Task When_InvokedAsync_Expect_Invoked(bool isOpened, string expected)
-        {
-            // Arrange
-            Task<bool> ControlledBy() => Task.FromResult(isOpened);
-            Task<string> WhenOpened() => Task.FromResult("Feature gate opened!");
-            Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
 
-            // Act
-            string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync3_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                bool ControlledBy() => isOpened;
+                string WhenOpened() => "Feature gate opened!";
+                Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
 
-            // Assert
-            Assert.Equal(expected, result);
-        }
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
 
-        [Fact]
-        public async Task When_InvokedAsyncWithFallback_Expect_WhenClosedInvoked()
-        {
-            // Arrange
-            Task<bool> ControlledBy() => Task.FromResult(true);
-            Task<string> WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
-            Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
+                // Assert
+                Assert.Equal(expected, result);
+            }
 
-            // Act
-            string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+            [Fact]
+            public async Task When_InvokedAsync3WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                string WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
 
-            // Assert
-            Assert.Equal("Feature gate closed.", result);
-        }
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task When_InvokedAsyncWithFallback_Expect_Exception(bool fallbackOnException)
-        {
-            // Arrange
-            Task<bool> ControlledBy() => Task.FromResult(true);
-            Task<string> WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
-            Task<string> WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
 
-            // Act
-            Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync3WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                string WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task<string> WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
 
-            // Assert
-            Assert.IsType<InvalidOperationException>(exception);
-            Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
+
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync4_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                bool ControlledBy() => isOpened;
+                Task<string> WhenOpened() => Task.FromResult("Feature gate opened!");
+                Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
+
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsync4WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                Task<string> WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
+
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync4WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                bool ControlledBy() => true;
+                Task<string> WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task<string> WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
+
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync5_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(isOpened);
+                string WhenOpened() => "Feature gate opened!";
+                Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
+
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsync5WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                string WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task<string> WhenClosed() => Task.FromResult("Feature gate closed.");
+
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync5WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                string WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                Task<string> WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
+
+            [Theory]
+            [InlineData(true, "Feature gate opened!")]
+            [InlineData(false, "Feature gate closed.")]
+            public async Task When_InvokedAsync6_Expect_Invoked(bool isOpened, string expected)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(isOpened);
+                Task<string> WhenOpened() => Task.FromResult("Feature gate opened!");
+                string WhenClosed() => "Feature gate closed.";
+
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, false, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
+            [Fact]
+            public async Task When_InvokedAsync6WithFallback_Expect_WhenClosedInvoked()
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                Task<string> WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                string WhenClosed() => "Feature gate closed.";
+
+                // Act
+                string result = await FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
+
+                // Assert
+                Assert.Equal("Feature gate closed.", result);
+            }
+
+            [Theory]
+            [InlineData(true)]
+            [InlineData(false)]
+            public async Task When_InvokedAsync6WithFallback_Expect_Exception(bool fallbackOnException)
+            {
+                // Arrange
+                Task<bool> ControlledBy() => Task.FromResult(true);
+                Task<string> WhenOpened() => throw new InvalidOperationException("Feature gate opened!");
+                string WhenClosed() => throw new InvalidOperationException("Feature gate closed.");
+
+                // Act
+                Exception exception = await Record.ExceptionAsync(() => FeatureGate.InvokeAsync("myFeatureGateKey", InstrumentType.None, fallbackOnException, ControlledBy, WhenOpened, WhenClosed));
+
+                // Assert
+                Assert.IsType<InvalidOperationException>(exception);
+                Assert.Equal(fallbackOnException ? "Feature gate closed." : "Feature gate opened!", exception.Message);
+            }
         }
     }
 
