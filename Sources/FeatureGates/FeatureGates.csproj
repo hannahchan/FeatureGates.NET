@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <PackageId>FeatureGates</PackageId>
-    <PackageVersion>1.0.0-preview.4</PackageVersion>
+    <PackageVersion>1.0.0-preview.5</PackageVersion>
     <Title>FeatureGates</Title>
     <Authors>Hannah Chan</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
