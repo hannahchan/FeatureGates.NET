@@ -2,7 +2,7 @@
 
 Release observable features by using FeatureGates, instrumented abstractions that replace `if` statements.
 
-The aim of FeatureGates is to enable reusable dashboards, tooling and automation by standardizing the way metrics and traces are emitted. These metrics and traces can then be collected and shipped via [OpenTelemetry](https://opentelemetry.io/) or by other means.
+The aim of FeatureGates is to enable reusable dashboards, tooling and automation by standardizing the way [metrics](#metrics) and [traces](#traces) are emitted. These metrics and traces can then be collected and shipped via [OpenTelemetry](https://opentelemetry.io/) or by other means.
 
 FeatureGates are vendor-agnostic and under the hood uses [.NET metrics](https://docs.microsoft.com/dotnet/core/diagnostics/metrics) and [.NET distributed tracing](https://docs.microsoft.com/dotnet/core/diagnostics/distributed-tracing).
 
