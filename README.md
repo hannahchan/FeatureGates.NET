@@ -100,6 +100,8 @@ Depending on the instrument type configured for a feature gate, feature gates wi
 | `feature.gate.executions` | Counter         | executions   | Measures the number of times a feature gate has been executed. |
 | `feature.gate.duration`   | Histogram       | milliseconds | Measures the duration of feature gate executions.              |
 
+To derive a full set of RED (Rates, Errors and Duration) metrics for your feature, configure your feature gate to use a histogram. Histograms should be used cautiously as they use more memory than counters. Use a counter if you do not need to record execution durations.
+
 ### Metric Attributes
 
 > **Warning** - Metric attributes are currently unstable.
