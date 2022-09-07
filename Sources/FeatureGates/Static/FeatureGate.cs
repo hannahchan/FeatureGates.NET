@@ -33,20 +33,18 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
+
+            return;
         }
-        else
-        {
-            Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -68,20 +66,16 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
         }
-        else
-        {
-            return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -102,20 +96,18 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
+
+            return;
         }
-        else
-        {
-            await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -137,20 +129,16 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
         }
-        else
-        {
-            return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /*
@@ -181,20 +169,18 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
+
+            return;
         }
-        else
-        {
-            Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -215,20 +201,18 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
+
+            return;
         }
-        else
-        {
-            Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -249,20 +233,18 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
+
+            return;
         }
-        else
-        {
-            await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /*
@@ -293,20 +275,18 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
+
+            return;
         }
-        else
-        {
-            await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -327,20 +307,18 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
+
+            return;
         }
-        else
-        {
-            await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -361,20 +339,18 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
+
+            return;
         }
-        else
-        {
-            Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /*
@@ -406,20 +382,16 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
         }
-        else
-        {
-            return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -441,20 +413,16 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
         }
-        else
-        {
-            return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -476,20 +444,16 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
         }
-        else
-        {
-            return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /*
@@ -521,20 +485,16 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
         }
-        else
-        {
-            return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -556,20 +516,16 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
         }
-        else
-        {
-            return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        return await Instrumentation.RecordExecutionAsync(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /// <summary>Invokes the <paramref name="controlledBy" /> predicate and then based on the result will invoke the <paramref name="whenOpened" /> or <paramref name="whenClosed" /> delegate.</summary>
@@ -591,20 +547,16 @@ public static class FeatureGate
             }
             catch
             {
-                if (fallbackOnException)
-                {
-                    return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-                }
-                else
+                if (!fallbackOnException)
                 {
                     throw;
                 }
+
+                return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
             }
         }
-        else
-        {
-            return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
-        }
+
+        return Instrumentation.RecordExecution(featureGateKey, FeatureGateState.Closed, whenClosed, instrumentType);
     }
 
     /*
