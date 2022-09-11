@@ -21,6 +21,7 @@ internal static class Program
         using MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
             .SetResourceBuilder(resourceBuilder)
             .AddMeter("FeatureGates")
+            .AddOtlpExporter()
             .AddPrometheusExporter(options =>
             {
                 options.StartHttpListener = true;
@@ -33,6 +34,7 @@ internal static class Program
         using TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
             .SetResourceBuilder(resourceBuilder)
             .AddSource("FeatureGates")
+            .AddOtlpExporter()
             .Build();
 
         FeatureGateAsync featureGate1 = FeatureGate.WithKey("MyCounterGate")
