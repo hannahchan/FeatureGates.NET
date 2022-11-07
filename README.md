@@ -4,7 +4,7 @@ Release observable features by using FeatureGates, instrumented abstractions tha
 
 The aim of FeatureGates is to enable reusable dashboards, tooling and automation by standardizing the way [metrics](#metrics) and [traces](#traces) are emitted. These metrics and traces can then be collected and shipped via [OpenTelemetry](https://opentelemetry.io/) or by other means.
 
-FeatureGates are vendor-agnostic and under the hood uses [.NET metrics](https://docs.microsoft.com/dotnet/core/diagnostics/metrics) and [.NET distributed tracing](https://docs.microsoft.com/dotnet/core/diagnostics/distributed-tracing).
+FeatureGates are vendor-agnostic and under the hood uses [.NET metrics](https://learn.microsoft.com/dotnet/core/diagnostics/metrics) and [.NET distributed tracing](https://learn.microsoft.com/dotnet/core/diagnostics/distributed-tracing).
 
 Install the package from [NuGet.org](https://www.nuget.org/packages/FeatureGates) by running;
 
@@ -126,15 +126,15 @@ MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
     .Build();
 ```
 
-It is also possible to subscribe to the metrics from your feature gates by using a [MeterListener](https://docs.microsoft.com/dotnet/api/system.diagnostics.metrics.meterlistener).
+It is also possible to subscribe to the metrics from your feature gates by using a [MeterListener](https://learn.microsoft.com/dotnet/api/system.diagnostics.metrics.meterlistener).
 
-To learn more on how to collect metrics, please checkout the [metrics collection tutorial](https://docs.microsoft.com/en-au/dotnet/core/diagnostics/metrics-collection) at the .NET documentation website.
+To learn more on how to collect metrics, please checkout the [metrics collection tutorial](https://learn.microsoft.com/en-au/dotnet/core/diagnostics/metrics-collection) at the .NET documentation website.
 
 ## Traces
 
 Feature gates also output spans that represent feature gate executions to be included in traces. These spans will have the operation name `feature.gate.execution` so that you can easily identify them in a trace.
 
-A span is also known as an [Activity](https://docs.microsoft.com/dotnet/api/system.diagnostics.activity) in .NET.
+A span is also known as an [Activity](https://learn.microsoft.com/dotnet/api/system.diagnostics.activity) in .NET.
 
 ### Span Attributes
 
@@ -174,6 +174,6 @@ TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
     .Build();
 ```
 
-It is also possible to subscribe to spans from your feature gates by using an [ActivityListener](https://docs.microsoft.com/dotnet/api/system.diagnostics.activitylistener).
+It is also possible to subscribe to spans from your feature gates by using an [ActivityListener](https://learn.microsoft.com/dotnet/api/system.diagnostics.activitylistener).
 
-To learn more on how to collect spans, please checkout the [trace collection tutorial](https://docs.microsoft.com/dotnet/core/diagnostics/distributed-tracing-collection-walkthroughs) at the .NET documentation website.
+To learn more on how to collect spans, please checkout the [trace collection tutorial](https://learn.microsoft.com/dotnet/core/diagnostics/distributed-tracing-collection-walkthroughs) at the .NET documentation website.
