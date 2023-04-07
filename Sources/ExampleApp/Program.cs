@@ -18,7 +18,7 @@ internal static class Program
         ResourceBuilder resourceBuilder = ResourceBuilder.CreateDefault()
             .AddService("ExampleApp");
 
-        using MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
+        using MeterProvider? meterProvider = Sdk.CreateMeterProviderBuilder()
             .SetResourceBuilder(resourceBuilder)
             .AddMeter("FeatureGates")
             .AddOtlpExporter()
@@ -31,7 +31,7 @@ internal static class Program
             })
             .Build();
 
-        using TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
+        using TracerProvider? tracerProvider = Sdk.CreateTracerProviderBuilder()
             .SetResourceBuilder(resourceBuilder)
             .AddSource("FeatureGates")
             .AddOtlpExporter()
