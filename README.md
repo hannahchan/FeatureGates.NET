@@ -151,9 +151,7 @@ Spans emitted by feature gates will have the following attributes.
 
 ### Span Events
 
-> **Warning** - Span event attributes are currently unstable.
-
-When an uncaught exception occurs during a feature gate execution, a span event will be added to the span with the details of the exception. The span event will have the following details.
+When an uncaught exception occurs during a feature gate execution, a span event will be added to the span with the details of the exception. The span event will have the below attributes which follow the [OpenTelemetry Trace Semantic Conventions for Exceptions](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/exceptions).
 
 | Name                   | Description                                                |
 | ---------------------- | ---------------------------------------------------------- |
