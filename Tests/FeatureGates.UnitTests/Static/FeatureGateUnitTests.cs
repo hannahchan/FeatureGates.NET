@@ -1007,11 +1007,11 @@ public class FeatureGateUnitTests
         public async Task When_RecordingExecution_Expected_Recorded()
         {
             // Arrange
-            using SpyActivityListener activityListener = new SpyActivityListener();
-            using SpyMeterListener meterListener = new SpyMeterListener();
-
             string result = string.Empty;
             Task Function() => Task.Run(() => result = "Function executed!");
+
+            using SpyActivityListener activityListener = new SpyActivityListener();
+            using SpyMeterListener meterListener = new SpyMeterListener();
 
             // Act
             await FeatureGate.RecordExecutionAsync(

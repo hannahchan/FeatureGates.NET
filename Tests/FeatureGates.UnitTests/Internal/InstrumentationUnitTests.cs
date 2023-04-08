@@ -595,11 +595,11 @@ public class InstrumentationUnitTests
         internal async Task When_RecordingExecution_Expect_Recorded(FeatureGateState featureGateState, InstrumentType instrumentType)
         {
             // Arrange
-            using SpyActivityListener activityListener = new SpyActivityListener();
-            using SpyMeterListener meterListener = new SpyMeterListener();
-
             string result = string.Empty;
             Task Function() => Task.Run(() => result = "Function executed!");
+
+            using SpyActivityListener activityListener = new SpyActivityListener();
+            using SpyMeterListener meterListener = new SpyMeterListener();
 
             // Act
             await Instrumentation.RecordExecutionAsync(
@@ -853,11 +853,11 @@ public class InstrumentationUnitTests
         internal async Task When_RecordingExecutionWithNoInstrument_Expect_NotRecorded(FeatureGateState featureGateState, InstrumentType instrumentType)
         {
             // Arrange
-            using SpyActivityListener activityListener = new SpyActivityListener();
-            using SpyMeterListener meterListener = new SpyMeterListener();
-
             string result = string.Empty;
             Task Function() => Task.Run(() => result = "Function executed!");
+
+            using SpyActivityListener activityListener = new SpyActivityListener();
+            using SpyMeterListener meterListener = new SpyMeterListener();
 
             // Act
             await Instrumentation.RecordExecutionAsync(

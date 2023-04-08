@@ -12,14 +12,14 @@ public class FeatureGateAsyncUnitTests
     public async Task When_UsingSimpleConstructorThenInvoked_Expect_Invoked(bool isOpened, string expected)
     {
         // Arrange
-        using SpyActivityListener activityListener = new SpyActivityListener();
-        using SpyMeterListener meterListener = new SpyMeterListener();
-
         string result = string.Empty;
 
         Task<bool> ControlledBy() => Task.FromResult(isOpened);
         Task WhenOpened() => Task.Run(() => result = "Feature gate opened!");
         Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+
+        using SpyActivityListener activityListener = new SpyActivityListener();
+        using SpyMeterListener meterListener = new SpyMeterListener();
 
         // Act
         FeatureGateAsync featureGate = new FeatureGateAsync("myFeatureGateKey", ControlledBy, WhenOpened, WhenClosed);
@@ -41,14 +41,14 @@ public class FeatureGateAsyncUnitTests
     public async Task When_UsingFullConstructorThenInvoked_Expect_Invoked(bool isOpened, string expected)
     {
         // Arrange
-        using SpyActivityListener activityListener = new SpyActivityListener();
-        using SpyMeterListener meterListener = new SpyMeterListener();
-
         string result = string.Empty;
 
         Task<bool> ControlledBy() => Task.FromResult(isOpened);
         Task WhenOpened() => Task.Run(() => result = "Feature gate opened!");
         Task WhenClosed() => Task.Run(() => result = "Feature gate closed.");
+
+        using SpyActivityListener activityListener = new SpyActivityListener();
+        using SpyMeterListener meterListener = new SpyMeterListener();
 
         // Act
         FeatureGateAsync featureGate = new FeatureGateAsync("myFeatureGateKey", InstrumentType.None, true, ControlledBy, WhenOpened, WhenClosed);
