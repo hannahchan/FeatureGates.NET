@@ -1,6 +1,6 @@
 {
   "name": "FeatureGates.NET",
-  "image": "mcr.microsoft.com/devcontainers/dotnet:0-6.0",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:8.0",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
       "version": "none"
