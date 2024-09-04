@@ -22,12 +22,10 @@ internal static class Program
             .SetResourceBuilder(resourceBuilder)
             .AddMeter("FeatureGates")
             .AddOtlpExporter()
-            .AddPrometheusExporter(options =>
+            .AddPrometheusHttpListener(options =>
             {
-                options.StartHttpListener = true;
-                options.HttpListenerPrefixes = new string[] { $"http://localhost:9464/" };
                 options.ScrapeEndpointPath = "/metrics";
-                options.ScrapeResponseCacheDurationMilliseconds = 0;
+                options.UriPrefixes = ["http://localhost:9464/"];
             })
             .Build();
 
