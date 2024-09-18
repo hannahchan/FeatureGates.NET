@@ -126,6 +126,8 @@ MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
     .Build();
 ```
 
+For those using OpenTelemetry .NET automatic instrumentation, you can subscribe by appending `FeatureGates` to the environment variable `OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES`.
+
 It is also possible to subscribe to the metrics from your feature gates by using a [MeterListener](https://learn.microsoft.com/dotnet/api/system.diagnostics.metrics.meterlistener).
 
 To learn more on how to collect metrics, please checkout the [metrics collection tutorial](https://learn.microsoft.com/en-au/dotnet/core/diagnostics/metrics-collection) at the .NET documentation website.
@@ -171,6 +173,8 @@ TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
     // Other configuration
     .Build();
 ```
+
+For those using OpenTelemetry .NET automatic instrumentation, you can subscribe by appending `FeatureGates` to the environment variable `OTEL_DOTNET_AUTO_TRACES_ADDITIONAL_SOURCES`.
 
 It is also possible to subscribe to spans from your feature gates by using an [ActivityListener](https://learn.microsoft.com/dotnet/api/system.diagnostics.activitylistener).
 
